@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "dgSpecHash": "6IPu2mSf4R8vco+FxiGIGjVKKsO+sgdQLBaXTb7vu7Khh/mYAGl8r3DJ8uFj0176w+/jFcy2MiMcmwQcYb6xvg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\filip\\source\\repos\\PAC-MAN\\PacMan\\PAC-MAN.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\filip\\.nuget\\packages\\mousekeyhook\\5.6.0\\mousekeyhook.5.6.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Balíček MouseKeyHook 5.6.0 se místo cílové verze rozhraní .NET Framework projektu net6.0-windows7.0 obnovil pomocí .NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8. Balíček nemusí být plně kompatibilní s vaším projektem.",
+      "libraryId": "MouseKeyHook",
+      "targetGraphs": [
+        "net6.0-windows7.0"
+      ]
+    }
+  ]
+}
