@@ -15,12 +15,12 @@ namespace PAC_MAN
     public partial class game : Form
     {
         private IKeyboardMouseEvents m_GlobalHook;
-        Bitmap btm;
+        public Bitmap btm;
         bool isMoving = false;
         int[,] map;
         List<Label> listLabelu = new List<Label>();
         public event DataSentHandler DataSent;
-        int score = 0;
+        public int score = 0;
         int lives = 3;
         public int PacmanX = 0;
         public int PacmanY = 0;
@@ -47,10 +47,10 @@ namespace PAC_MAN
             map = new int[this.Width / 50, this.Height / 50];
             NacistMapu();
             //nakreslitGrid();
-            PacManPictureBox.Image = Image.FromFile("pacman.gif");
+            //PacManPictureBox.Image = Image.FromFile("pacman.gif");
             // make the image fit the picturebox
             g = Graphics.FromImage(btm);
-            PacManPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            //PacManPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
 
@@ -130,31 +130,33 @@ namespace PAC_MAN
             int wallRight = 0;
             int wallBottom = 0;
 
+            const int sirkaZdi = 8;
+
             try
             {
                 if (map[x - 1, y] != 1)
-                    wallLeft = 4;
+                    wallLeft = sirkaZdi;
             }
             catch { }
 
             try
             {
                 if (map[x + 1, y] != 1)
-                    wallRight = 4;
+                    wallRight = sirkaZdi;
             }
             catch { }
 
             try
             {
                 if (map[x, y - 1] != 1)
-                    wallTop = 4;
+                    wallTop = sirkaZdi;
             }
             catch { }
 
             try
             {
                 if (map[x, y + 1] != 1)
-                    wallBottom = 4;
+                    wallBottom = sirkaZdi;
             }
             catch { }
 
@@ -183,88 +185,31 @@ namespace PAC_MAN
 
         private void GlobalHookKeyPress(object? sender, KeyPressEventArgs e)
         {
-            if (isMoving) return;
             switch(e.KeyChar)
             {
                 case 'w':
-                    pacman.Y--;
-                    if (PacManPictureBox.Location.Y <= 1) return;
-                    if (map[PacmanX, PacmanY - 1] == 1) return;
-                    if (map[PacmanX, PacmanY - 1] == -1)
-                    {
-                        score++;
-                        map[PacmanX, PacmanY - 1] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), PacmanX * 50 + 20, PacmanY * 50 + 20 - 50, 10, 10);
-                    }
-                    isMoving = true;
-                    PacManPictureBox.Image = Image.FromFile("pacman(nahoru).gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        PacManPictureBox.Top -= 2;
-                        MainForm.wait(1);
-                    }
-                    isMoving = false;
-                    PacmanY--;
+                    if (pacman.pohybujeSe)
+                        pacman.smer = PacMan.Smer.Nahoru;
+                    else
+                        pacman.Y--;
                     break;
                 case 'a':
-                    pacman.X--;
-                    if (PacManPictureBox.Location.X <= 1) return;
-                    if (map[PacmanX - 1, PacmanY] == 1) return;
-                    if (map[PacmanX - 1, PacmanY] == -1)
-                    {
-                        score++;
-                        map[PacmanX - 1, PacmanY] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), PacmanX * 50 + 20 - 50, PacmanY * 50 + 20, 10, 10);
-                    }
-                    isMoving = true;
-                    PacManPictureBox.Image = Image.FromFile("pacman(doleva).gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        PacManPictureBox.Left -= 2;
-                        MainForm.wait(1);
-                    }
-                    isMoving = false;
-                    PacmanX--;
+                    if (pacman.pohybujeSe)
+                        pacman.smer = PacMan.Smer.Doleva;
+                    else
+                        pacman.X--;
                     break;
                 case 's':
-                    pacman.Y++;
-                    if (this.Height <= PacManPictureBox.Location.Y+50) return;
-                    if (map[PacmanX, PacmanY + 1] == 1) return;
-                    if (map[PacmanX, PacmanY + 1] == -1)
-                    {
-                        score++;
-                        map[PacmanX, PacmanY + 1] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), PacmanX * 50 + 20, PacmanY * 50 + 20 + 50, 10, 10);
-                    }
-                    isMoving = true;
-                    PacManPictureBox.Image = Image.FromFile("pacman(dolu).gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        PacManPictureBox.Top += 2;
-                        MainForm.wait(1);
-                    }
-                    isMoving = false;
-                    PacmanY++;
+                    if (pacman.pohybujeSe)
+                        pacman.smer = PacMan.Smer.Dolu;
+                    else
+                        pacman.Y++;
                     break;
                 case 'd':
-                    pacman.X++;
-                    if (this.Width <= PacManPictureBox.Location.X + 50) return;
-                    if (map[PacmanX + 1, PacmanY] == 1) return;
-                    if (map[PacmanX + 1, PacmanY] == -1)
-                    {
-                        score++;
-                        map[PacmanX + 1, PacmanY] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), PacmanX * 50 + 20 + 50, PacmanY * 50 + 20, 10, 10);
-                    }
-                    isMoving = true;
-                    PacManPictureBox.Image = Image.FromFile("pacman.gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        PacManPictureBox.Left += 2;
-                        MainForm.wait(1);
-                    }
-                    isMoving = false;
-                    PacmanX++;
+                    if (pacman.pohybujeSe)
+                        pacman.smer = PacMan.Smer.Doprava;
+                    else
+                        pacman.X++;
                     break;
             }
         }
@@ -286,7 +231,7 @@ namespace PAC_MAN
         }
         private void game_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(btm, 0, 0);   
+           e.Graphics.DrawImage(btm, 0, 0);   
         }
 
         private void game_KeyPress(object sender, KeyPressEventArgs e)

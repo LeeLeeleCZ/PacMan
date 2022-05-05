@@ -9,38 +9,60 @@ namespace PAC_MAN
     internal class PacMan : PictureBox
     {
         public event Action OnInit;
+        public int lives = 3;
         private int x = 0;
+        Graphics g;
         public int X { 
             get { return x; } 
             set {
 
                 if (x < value)
                 {
+                    if (Parent.Width <= this.X * 50 + 50) return;
+                    if (map[this.X + 1, this.Y] == 1) return;
+                    if (map[this.X + 1, this.Y] == -1)
+                    {
+                        Parent.score++;
+                        map[this.X + 1, this.Y] = 0;
+                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20 + 50, this.Y * 50 + 20, 10, 10);
+                    }
                     this.smer = Smer.Doprava;
-                    pohybujeSe = true;
+                    PohybujeSe = true;
+                    this.Image = Image.FromFile("pacman.gif");
                     for (int i = 0; i < 25; i++)
                     {
                         this.Left += 2;
                         MainForm.wait(1);
                     }
+                    x = value;
                 }
                 else if (x > value)
                 {
+                    if (this.X <= 0) return;
+                    if (map[this.X - 1, this.Y] == 1) return;
+                    if (map[this.X - 1, this.Y] == -1)
+                    {
+                        Parent.score++;
+                        map[this.X - 1, this.Y] = 0;
+                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20 - 50, this.Y * 50 + 20, 10, 10);
+                    }
                     this.smer = Smer.Doleva;
-                    pohybujeSe = true;
+                    PohybujeSe = true;
+                    this.Image = Image.FromFile("pacman(doleva).gif");
                     for (int i = 0; i < 25; i++)
                     {
                         this.Left -= 2;
                         MainForm.wait(1);
                     }
+                    x = value;
                 }
                 else if (x == value)
                 {
                     return;
                 }
 
-                x = value;
-                pohybujeSe = false;
+                
+                PohybujeSe = false;
             } 
         }
         public int y = 0;
@@ -50,63 +72,109 @@ namespace PAC_MAN
             {
                 if (y < value)
                 {
+                    if (Parent.Height <= this.Y * 50 + 50) return;
+                    if (map[this.X, this.Y + 1] == 1) return;
+                    if (map[this.X, this.Y + 1] == -1)
+                    {
+                        Parent.score++;
+                        map[this.X, this.Y + 1] = 0;
+                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20, this.Y * 50 + 20 + 50, 10, 10);
+                    }
                     this.smer = Smer.Dolu;
-                    pohybujeSe = true;
+                    PohybujeSe = true;
+                    this.Image = Image.FromFile("pacman(dolu).gif");
                     for (int i = 0; i < 25; i++)
                     {
                         this.Top += 2;
                         MainForm.wait(1);
                     }
+                    y = value;
                 }
                 else if (y > value)
                 {
+                    if (this.Y <= 0) return;
+                    if (map[this.X, this.Y - 1] == 1) return;
+                    if (map[this.X, this.Y - 1] == -1)
+                    {
+                        Parent.score++;
+                        map[this.X, this.Y - 1] = 0;
+                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20, this.Y * 50 + 20 - 50, 10, 10);
+                    }
                     this.smer = Smer.Nahoru;
-                    pohybujeSe = true;
+                    PohybujeSe = true;
+                    this.Image = Image.FromFile("pacman(nahoru).gif");
                     for (int i = 0; i < 25; i++)
                     {
                         this.Top -= 2;
                         MainForm.wait(1);
                     }
+                    y = value;
                 }
                 else if (y == value)
                 {
                     return;
                 }
 
-                y = value;
-                pohybujeSe = false;
+                
+                PohybujeSe = false;
             }
         }
         private int[,] map;
         private game Parent;
         public bool pohybujeSe = false;
 
-        public Smer _smer = Smer.Doprava;
+        bool PohybujeSe {
+            get { return pohybujeSe; }
+            set { pohybujeSe = value;
+                if (!value)
+                {
+                    switch (smer)
+                    {
+                        case Smer.Doleva:
+                            this.X--;
+                            break;
+                        case Smer.Doprava:
+                            this.X++;
+                            break;
+                        case Smer.Nahoru:
+                            this.Y--;
+                            break;
+                        case Smer.Dolu:
+                            this.Y++;
+                            break;
+                    }
+                }
+
+            }
+        }
+
+        public Smer _smer = Smer.Nikam;
         public Smer smer { 
             get { return _smer; } 
             set { 
                 _smer = value;
-                switch(value)
-                {
-                    case Smer.Doleva:
-                        this.Image = Image.FromFile("pacman(doleva).gif");
-                        break;
-                    case Smer.Doprava:
-                        this.Image = Image.FromFile("pacman.gif");
-                        break;
-                    case Smer.Nahoru:
-                        this.Image = Image.FromFile("pacman(nahoru).gif");
-                        break;
-                    case Smer.Dolu:
-                        this.Image = Image.FromFile("pacman(dolu).gif");
-                        break;
-                }
+                //switch(value)
+                //{
+                //    case Smer.Doleva:
+                //        this.Image = Image.FromFile("pacman(doleva).gif");
+                //        break;
+                //    case Smer.Doprava:
+                //        this.Image = Image.FromFile("pacman.gif");
+                //        break;
+                //    case Smer.Nahoru:
+                //        this.Image = Image.FromFile("pacman(nahoru).gif");
+                //        break;
+                //    case Smer.Dolu:
+                //        this.Image = Image.FromFile("pacman(dolu).gif");
+                //        break;
+                //}
             } 
                     
         }
         
         public PacMan(int x, int y, int[,] map, Action callBack, game parent)
         {
+            g = Graphics.FromImage(parent.btm);
             this.Height = 50;
             this.Width = 50;
             this.map = map;
@@ -125,7 +193,8 @@ namespace PAC_MAN
             Doleva,
             Nahoru,
             Doprava,
-            Dolu
+            Dolu,
+            Nikam
         }
     }
 }
