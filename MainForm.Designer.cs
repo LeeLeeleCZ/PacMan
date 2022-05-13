@@ -50,6 +50,7 @@
             this.zobrazeni.Name = "zobrazeni";
             this.zobrazeni.Size = new System.Drawing.Size(1200, 800);
             this.zobrazeni.TabIndex = 1;
+            this.zobrazeni.Tag = "MainForm";
             // 
             // MainForm
             // 
@@ -60,6 +61,7 @@
             this.Controls.Add(this.TitleBar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
+            this.Tag = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);
 

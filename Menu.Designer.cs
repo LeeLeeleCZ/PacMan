@@ -109,8 +109,9 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(782, 100);
             this.button4.TabIndex = 8;
-            this.button4.Text = "Credits";
+            this.button4.Text = "Settings";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 

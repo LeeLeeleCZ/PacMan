@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace PAC_MAN
 {
-    public delegate void DataSentHandler(string msg);
+    public delegate void DataSentHandler(Form? sender, string msg);
     public partial class Menu : Form
     {
         SmerPacmana smer = SmerPacmana.dolu;
@@ -97,12 +97,17 @@ namespace PAC_MAN
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DataSent("Game");
+            DataSent(null, "Game");
         }
-
+        
         private void button2_Click(object sender, EventArgs e)
         {
-            DataSent("LevelEditor");
+            DataSent(null, "LevelEditor");
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

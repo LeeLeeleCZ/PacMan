@@ -11,7 +11,6 @@ namespace PAC_MAN
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            //MessageBox.Show("Hru plánuji dát do soutìže, akorát kvùli množství vìcí ve høe jsem jí ještì nestihl plnì dodìlat");
             Application.Run(new MainForm());
         }
     }

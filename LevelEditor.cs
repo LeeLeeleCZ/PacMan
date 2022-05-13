@@ -15,12 +15,13 @@ namespace PAC_MAN
 {
     public partial class LevelEditor : Form
     {
-        private IKeyboardMouseEvents KMEvents;
+        private readonly IKeyboardMouseEvents KMEvents;
         public event DataSentHandler DataSent;
         Bitmap btm;
         int[,] pole;
         PictureBox[,] zdi;
-        public LevelEditor()
+        LevelEditorOptions EditorOptions;
+        public LevelEditor(MainForm parent)
         {
             KMEvents = Hook.AppEvents();
             KMEvents.KeyPress += KMEvents_KeyPress;
@@ -37,15 +38,31 @@ namespace PAC_MAN
                     pole[i, j] = 0;
                 }
             }
+
+            EditorOptions = new LevelEditorOptions(this);
+            EditorOptions.Show();
+            
+        }
+
+
+        private void editOptions_DataSent(string msg)
+        {
+            throw new NotImplementedException();
         }
 
         private void KMEvents_KeyPress(object? sender, KeyPressEventArgs e)
         {
-            saveLevel(pole);
-            //DataSent("Menu");
-            this.Dispose();
-            DataSent("Menu");
-            //this = null;
+            if (e.KeyChar == (char)27)
+            {
+                saveLevel(pole);
+                //DataSent("Menu");
+                DataSent(this, "Menu");
+                this.Close();
+                this.Dispose();
+                EditorOptions.Dispose();
+                //this = null;
+            }
+
         }
 
         void nakreslitGrid()
@@ -54,12 +71,12 @@ namespace PAC_MAN
             for (int i = 0; i < this.Width; i += 50)
             {
                 // draw a horizontal line
-                g.DrawLine(Pens.Black, i, 0, i, this.Height);
+                g.DrawLine(Pens.DarkGray, i, 0, i, this.Height);
             }
             for (int i = 0; i < this.Height; i += 50)
             {
                 // draw a vertical line
-                g.DrawLine(Pens.Black, 0, i, this.Width, i);
+                g.DrawLine(Pens.DarkGray, 0, i, this.Width, i);
             }
         }
 
@@ -78,7 +95,7 @@ namespace PAC_MAN
             if (pole[x, y] == 1)
             {
                 pole[x, y] = 0;
-                g.FillRectangle(Brushes.White, x * 50 + 1, y * 50 + 1, 49, 49);
+                g.FillRectangle(Brushes.Black, x * 50 + 1, y * 50 + 1, 49, 49);
             }
             else
             {
@@ -106,13 +123,23 @@ namespace PAC_MAN
                 list.Add(item);
             }
             
-            string filename = Microsoft.VisualBasic.Interaction.InputBox("Enter a name for the level", "Level name", "level1");
+            string filename = Microsoft.VisualBasic.Interaction.InputBox("Zadejte jméno levelu:", "Uložení mapy", "level1");
             XmlSerializer serializer = new XmlSerializer(typeof(List<int>));
 
             using (FileStream fs = new FileStream($"..//..//..//Maps//{filename}.xml", FileMode.Create))
             {
                 serializer.Serialize(fs, list);
             }
+        }
+
+        private void LevelEditor_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LevelEditor_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
         }
     }
 }

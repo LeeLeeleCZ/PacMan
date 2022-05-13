@@ -1,11 +1,13 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace PAC_MAN
 {
     public partial class MainForm : Form
     {
+        public event DataSentHandler DataSent;
         #region DLL_Imports
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
@@ -49,29 +51,51 @@ namespace PAC_MAN
             #endregion
             var menu = new Menu();
             otevritForm(menu);
-            menu.DataSent += DataSent;
-            
+            menu.DataSent += OptionDataSent;
+            this.Move += MainForm_Move;
+
         }
 
-        private void DataSent(string msg)
+        private void MainForm_Move(object? sender, EventArgs e)
         {
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is LevelEditorOptions)
+                {
+                    LevelEditorOptions editor = (LevelEditorOptions)form;
+                    // set editor location to be in center
+                    editor.Location = new Point(this.Location.X + this.Width+25, this.Location.Y + this.Height / 2 - editor.Height / 2+25);
+                    //editor.Location = new Point(this.Location.X + this.Width, this.Location.Y);
+                }
+            }
+        }
+
+        private void OptionDataSent(Form? sender, string msg)
+        {
+            if(sender != null)
+            {
+                sender.Dispose();
+                sender = null;
+            }  
             GC.Collect();
             switch (msg)
             {
                 case "Menu":
                     var menu = new Menu();
                     otevritForm(menu);
-                    menu.DataSent += DataSent;
+                    menu.DataSent += OptionDataSent;
                     break;
                 case "Game":
-                    var game = new game();
+                    //input box which inputs string
+                    string mapName = Microsoft.VisualBasic.Interaction.InputBox("Kterou mapu chcete naèíst?", "Naètení mapy", "level1");
+                    var game = new game(mapName);
                     otevritForm(game);
-                    game.DataSent += DataSent;
+                    game.DataSent += OptionDataSent;
                     break;
                 case "LevelEditor":
-                    var LevelEditor = new LevelEditor();
+                    var LevelEditor = new LevelEditor(this);
                     otevritForm(LevelEditor);
-                    LevelEditor.DataSent += DataSent;
+                    LevelEditor.DataSent += OptionDataSent;
                     break;
                 case "Settings":
                     break;
@@ -183,5 +207,6 @@ namespace PAC_MAN
 
             return destImage;
         }
+
     }
 }

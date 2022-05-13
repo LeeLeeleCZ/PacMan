@@ -46,3 +46,6 @@ C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\refint\PAC-M
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC-MAN.pdb
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC-MAN.genruntimeconfig.cache
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\ref\PAC-MAN.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Settings.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.LevelEditorOptions.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.MapSelector.resources

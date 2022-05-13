@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace PAC_MAN
 {
-    internal class PacMan : PictureBox
+    public class PacMan : PictureBox
     {
-        public event Action OnInit;
         public int lives = 3;
+        int score = 0;
         private int x = 0;
         Graphics g;
         public int X { 
@@ -22,7 +22,8 @@ namespace PAC_MAN
                     if (map[this.X + 1, this.Y] == 1) return;
                     if (map[this.X + 1, this.Y] == -1)
                     {
-                        Parent.score++;
+                        score++;
+                        Parent.pocetGoldu--;
                         map[this.X + 1, this.Y] = 0;
                         g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20 + 50, this.Y * 50 + 20, 10, 10);
                     }
@@ -42,7 +43,8 @@ namespace PAC_MAN
                     if (map[this.X - 1, this.Y] == 1) return;
                     if (map[this.X - 1, this.Y] == -1)
                     {
-                        Parent.score++;
+                        score++;
+                        Parent.pocetGoldu--;
                         map[this.X - 1, this.Y] = 0;
                         g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20 - 50, this.Y * 50 + 20, 10, 10);
                     }
@@ -63,6 +65,7 @@ namespace PAC_MAN
 
                 
                 PohybujeSe = false;
+                GC.Collect();
             } 
         }
         public int y = 0;
@@ -76,7 +79,8 @@ namespace PAC_MAN
                     if (map[this.X, this.Y + 1] == 1) return;
                     if (map[this.X, this.Y + 1] == -1)
                     {
-                        Parent.score++;
+                        score++;
+                        Parent.pocetGoldu--;
                         map[this.X, this.Y + 1] = 0;
                         g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20, this.Y * 50 + 20 + 50, 10, 10);
                     }
@@ -96,7 +100,8 @@ namespace PAC_MAN
                     if (map[this.X, this.Y - 1] == 1) return;
                     if (map[this.X, this.Y - 1] == -1)
                     {
-                        Parent.score++;
+                        score++;
+                        Parent.pocetGoldu--;
                         map[this.X, this.Y - 1] = 0;
                         g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20, this.Y * 50 + 20 - 50, 10, 10);
                     }
@@ -117,6 +122,7 @@ namespace PAC_MAN
 
                 
                 PohybujeSe = false;
+                GC.Collect();
             }
         }
         private int[,] map;
@@ -149,30 +155,9 @@ namespace PAC_MAN
         }
 
         public Smer _smer = Smer.Nikam;
-        public Smer smer { 
-            get { return _smer; } 
-            set { 
-                _smer = value;
-                //switch(value)
-                //{
-                //    case Smer.Doleva:
-                //        this.Image = Image.FromFile("pacman(doleva).gif");
-                //        break;
-                //    case Smer.Doprava:
-                //        this.Image = Image.FromFile("pacman.gif");
-                //        break;
-                //    case Smer.Nahoru:
-                //        this.Image = Image.FromFile("pacman(nahoru).gif");
-                //        break;
-                //    case Smer.Dolu:
-                //        this.Image = Image.FromFile("pacman(dolu).gif");
-                //        break;
-                //}
-            } 
-                    
-        }
+        public Smer smer { get { return _smer; } set { _smer = value;}   }
         
-        public PacMan(int x, int y, int[,] map, Action callBack, game parent)
+        public PacMan(int x, int y, int[,] map, game parent)
         {
             g = Graphics.FromImage(parent.btm);
             this.Height = 50;
@@ -184,8 +169,6 @@ namespace PAC_MAN
             this.y = y;
             this.Image = Image.FromFile("pacman.gif");
             this.SizeMode = PictureBoxSizeMode.StretchImage;
-            this.OnInit += callBack;
-            if (OnInit != null) OnInit();
         }
 
         public enum Smer

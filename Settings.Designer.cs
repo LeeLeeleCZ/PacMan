@@ -1,6 +1,6 @@
 ﻿namespace PAC_MAN
 {
-    partial class LevelEditor
+    partial class Settings
     {
         /// <summary>
         /// Required designer variable.
@@ -30,21 +30,15 @@
         {
             this.SuspendLayout();
             // 
-            // LevelEditor
+            // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1200, 800);
-            this.DoubleBuffered = true;
-            this.ForeColor = System.Drawing.Color.Black;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "LevelEditor";
-            this.Text = "LevelEditor";
-            this.Load += new System.EventHandler(this.LevelEditor_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.LevelEditor_Paint);
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.LevelEditor_KeyPress);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LevelEditor_MouseClick);
+            this.Name = "Settings";
+            this.Text = "Settings";
             this.ResumeLayout(false);
 
         }

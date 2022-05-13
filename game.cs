@@ -21,13 +21,15 @@ namespace PAC_MAN
         List<Label> listLabelu = new List<Label>();
         public event DataSentHandler DataSent;
         public int score = 0;
-        int lives = 3;
-        public int PacmanX = 0;
-        public int PacmanY = 0;
+        //public int PacmanX = 0;
+        //public int PacmanY = 0;
         Ghost ghost;
-        List<Ghost> listDuchu = new List<Ghost>();
+        //List<Ghost> listDuchu = new List<Ghost>();
         Graphics g;
-        PacMan pacman;
+        public PacMan pacman;
+        string mapName;
+        public bool GameOver = false;
+        public int pocetGoldu;
 
         private static void OnInit()
         {
@@ -38,8 +40,9 @@ namespace PAC_MAN
             
         }
 
-        public game()
+        public game(string mapName)
         {
+            this.mapName = mapName;
             InitializeComponent();
             btm = new Bitmap(this.Width, this.Height);
             this.DoubleBuffered = true;
@@ -54,21 +57,21 @@ namespace PAC_MAN
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
 
-            pacman = new PacMan(0, 0, map, OnInit, this);
+            pacman = new PacMan(0, 0, map, this);
             pacman.BringToFront();
             this.Controls.Add(pacman);
 
-            ghost = new Ghost(map.GetLength(0),map.GetLength(1), map, this);
-            Ghost ghost2 = new Ghost(map.GetLength(0)-1, 0, map, this);
+            ghost = new Ghost(map.GetLength(0)-1,map.GetLength(1)-1, map, this);
+            //Ghost ghost2 = new Ghost(map.GetLength(0)-1, 0, map, this);
             
-            ghost2.BringToFront();
+            //ghost2.BringToFront();
             ghost.BringToFront();
-            this.Controls.Add(ghost2);
+            //this.Controls.Add(ghost2);
             this.Controls.Add(ghost);
             
-            listDuchu.Add(ghost);
-            listDuchu.Add(ghost2);
-
+            //listDuchu.Add(ghost);
+            //listDuchu.Add(ghost2);
+            //timer1.Start();
         }
 
         private void Ghost_nastavPolohu(Point poloha)
@@ -109,6 +112,7 @@ namespace PAC_MAN
                     {
                         //draw a gold coin on the map using graphics
                         map[x, y] = -1;
+                        pocetGoldu++;
                         g.FillEllipse(new SolidBrush(Color.Gold), x * 50+20, y * 50+20, 10, 10);
                         
                     }
@@ -176,7 +180,7 @@ namespace PAC_MAN
         {
             // deserialize xml
             XmlSerializer serializer = new XmlSerializer(typeof(List<int>));
-            FileStream fs = new FileStream("..//..//..//Maps//default.xml", FileMode.Open);
+            FileStream fs = new FileStream($"..//..//..//Maps//{mapName}.xml", FileMode.Open);
             List<int> list = (List<int>)serializer.Deserialize(fs);
             fs.Close();
             return list;
@@ -237,16 +241,6 @@ namespace PAC_MAN
         private void game_KeyPress(object sender, KeyPressEventArgs e)
         {
            
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (ghost.x == PacmanX && ghost.y == PacmanY)
-            {
-                timer1.Stop();
-                MessageBox.Show("prohráli jste");
-                Environment.Exit(0);
-            }
         }
     }
 }
