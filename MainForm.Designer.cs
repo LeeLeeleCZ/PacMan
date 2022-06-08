@@ -61,6 +61,7 @@
             this.Controls.Add(this.TitleBar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Tag = "MainForm";
             this.Text = "Form1";
             this.ResumeLayout(false);

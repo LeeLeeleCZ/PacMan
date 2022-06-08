@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace PAC_MAN
 {
     internal static class Program
@@ -8,6 +10,7 @@ namespace PAC_MAN
         [STAThread]
         static void Main()
         {
+            Nastavení.LoadSettings();
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();

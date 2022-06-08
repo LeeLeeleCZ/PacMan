@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.PacManPictureBox = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -46,6 +47,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.PacManPictureBox);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
@@ -57,6 +59,13 @@
             this.panel1.Size = new System.Drawing.Size(988, 622);
             this.panel1.TabIndex = 4;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // panel2
+            // 
+            this.panel2.Location = new System.Drawing.Point(100, 81);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(782, 461);
+            this.panel2.TabIndex = 9;
             // 
             // PacManPictureBox
             // 
@@ -177,6 +186,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Menu";
             this.Text = "Menu";
+            this.Load += new System.EventHandler(this.Menu_Load);
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PacManPictureBox)).EndInit();
             this.ResumeLayout(false);
@@ -196,5 +206,6 @@
         private Label label3;
         private Label label2;
         private Label label1;
+        private Panel panel2;
     }
 }

@@ -19,6 +19,7 @@ namespace PAC_MAN
         bool isMoving = false;
         int[,] map;
         List<Label> listLabelu = new List<Label>();
+        public int pocetGoldu;
         public event DataSentHandler DataSent;
         public int score = 0;
         //public int PacmanX = 0;
@@ -28,9 +29,9 @@ namespace PAC_MAN
         Graphics g;
         public PacMan pacman;
         string mapName;
+        private Form parent;
         public bool GameOver = false;
-        public int pocetGoldu;
-
+        
         private static void OnInit()
         {
             while (false)
@@ -40,35 +41,43 @@ namespace PAC_MAN
             
         }
 
-        public game(string mapName)
+        public game(Form parent, string mapName)
         {
             this.mapName = mapName;
+            //this.mapName = mapName;
+            this.parent = parent;
+            parent.Visible = true;
             InitializeComponent();
             btm = new Bitmap(this.Width, this.Height);
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             map = new int[this.Width / 50, this.Height / 50];
-            NacistMapu();
+            
             //nakreslitGrid();
             //PacManPictureBox.Image = Image.FromFile("pacman.gif");
             // make the image fit the picturebox
             g = Graphics.FromImage(btm);
             //PacManPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            NacistMapu();
+            parent.Visible = true;
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
-
-            pacman = new PacMan(0, 0, map, this);
+            pacman = new PacMan(0, 1, map, this);
             pacman.BringToFront();
             this.Controls.Add(pacman);
-
-            ghost = new Ghost(map.GetLength(0)-1,map.GetLength(1)-1, map, this);
-            //Ghost ghost2 = new Ghost(map.GetLength(0)-1, 0, map, this);
-            
-            //ghost2.BringToFront();
+            ghost = new Ghost(map.GetLength(0) - 1, map.GetLength(1) - 1, map, this);
             ghost.BringToFront();
-            //this.Controls.Add(ghost2);
             this.Controls.Add(ghost);
-            
+
+
+
+            //Ghost ghost2 = new Ghost(map.GetLength(0)-1, 0, map, this);
+
+            //ghost2.BringToFront();
+
+            //this.Controls.Add(ghost2);
+
             //listDuchu.Add(ghost);
             //listDuchu.Add(ghost2);
             //timer1.Start();
@@ -119,6 +128,7 @@ namespace PAC_MAN
                     //g.FillRectangle(Brushes.White, x * 50, y * 50, 50, 50);
                 }
             }
+            this.Refresh();
         }
 
         private void lblPaint(object? sender, PaintEventArgs e)
@@ -192,28 +202,16 @@ namespace PAC_MAN
             switch(e.KeyChar)
             {
                 case 'w':
-                    if (pacman.pohybujeSe)
-                        pacman.smer = PacMan.Smer.Nahoru;
-                    else
-                        pacman.Y--;
+                    pacman.smer = PacMan.Smer.Nahoru;
                     break;
                 case 'a':
-                    if (pacman.pohybujeSe)
-                        pacman.smer = PacMan.Smer.Doleva;
-                    else
-                        pacman.X--;
+                    pacman.smer = PacMan.Smer.Doleva;
                     break;
                 case 's':
-                    if (pacman.pohybujeSe)
-                        pacman.smer = PacMan.Smer.Dolu;
-                    else
-                        pacman.Y++;
+                    pacman.smer = PacMan.Smer.Dolu;
                     break;
                 case 'd':
-                    if (pacman.pohybujeSe)
-                        pacman.smer = PacMan.Smer.Doprava;
-                    else
-                        pacman.X++;
+                    pacman.smer = PacMan.Smer.Doprava;
                     break;
             }
         }
@@ -241,6 +239,29 @@ namespace PAC_MAN
         private void game_KeyPress(object sender, KeyPressEventArgs e)
         {
            
+        }
+
+        private void game_Load(object sender, EventArgs e)
+        {
+            
+            
+        }
+        private void MapDataSent(Form? sender, string? msg)
+        {
+            
+            mapName = msg;
+            /*
+            NacistMapu();
+            parent.Visible = true;
+            m_GlobalHook = Hook.AppEvents();
+            m_GlobalHook.KeyPress += GlobalHookKeyPress;
+            pacman = new PacMan(0, 0, map, this);
+            pacman.BringToFront();
+            this.Controls.Add(pacman);
+            ghost = new Ghost(map.GetLength(0) - 1, map.GetLength(1) - 1, map, this);
+            ghost.BringToFront();
+            this.Controls.Add(ghost);
+             */
         }
     }
 }

@@ -10,6 +10,9 @@
     <Compile Update="LevelEditor.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="LevelEditorMapSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="LevelEditorOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -22,11 +25,11 @@
     <Compile Update="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Nastaveni.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="PacMan.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="SaveMap.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="Settings.cs">
       <SubType>Form</SubType>

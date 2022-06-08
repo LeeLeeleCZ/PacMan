@@ -25,13 +25,15 @@ namespace PAC_MAN
             this.parent = parent;
             this.Width = 50;
             this.Height = 50;
-            this.Image = Image.FromFile("ghost.png");
+            this.Image = Image.FromFile("../../../grafika/ghost.png");
             this.SizeMode = PictureBoxSizeMode.StretchImage;
             this.Location = new Point(x * 50, y * 50);
             timer.Tick += tick;
             timer.Interval = 1;
             smer = VybratSmer();
             timer.Start();
+
+
         }
 
         private void tick(object? sender, EventArgs e)
@@ -58,7 +60,7 @@ namespace PAC_MAN
                     this.Location = new Point(this.Location.X, this.Location.Y+2);
                     break;
             }
-            if (this.Bounds.IntersectsWith(new Rectangle(parent.pacman.X * 50, parent.pacman.Y * 50, 50, 50)) && parent.GameOver == false)
+            if (this.Bounds.IntersectsWith(new Rectangle(parent.pacman.x * 50, parent.pacman.y * 50, 50, 50)) && parent.GameOver == false)
             {
                 parent.GameOver = true;
                 timer.Stop();

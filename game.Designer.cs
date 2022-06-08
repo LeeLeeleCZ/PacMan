@@ -40,6 +40,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "game";
             this.Text = "game";
+            this.Load += new System.EventHandler(this.game_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.game_Paint);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.game_KeyPress);
             this.ResumeLayout(false);

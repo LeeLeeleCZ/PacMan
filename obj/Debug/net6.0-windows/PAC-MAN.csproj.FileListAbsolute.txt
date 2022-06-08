@@ -33,7 +33,6 @@ C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.game
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.LevelEditor.resources
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.MainForm.resources
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Menu.resources
-C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Nastaveni.resources
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Properties.Resources.resources
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC-MAN.csproj.GenerateResource.cache
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC-MAN.GeneratedMSBuildEditorConfig.editorconfig
@@ -49,3 +48,15 @@ C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\ref\PAC-MAN.
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Settings.resources
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.LevelEditorOptions.resources
 C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.MapSelector.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.Asio.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.Core.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.Midi.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.Wasapi.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.WinForms.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\NAudio.WinMM.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\Newtonsoft.Json.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.LevelEditorMapSelect.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.SaveMap.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Ghost.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.PacMan.resources

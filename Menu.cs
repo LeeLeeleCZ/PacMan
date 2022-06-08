@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace PAC_MAN
 {
-    public delegate void DataSentHandler(Form? sender, string msg);
+    public delegate void DataSentHandler(Form? sender, string? msg);
     public partial class Menu : Form
     {
         SmerPacmana smer = SmerPacmana.dolu;
@@ -19,7 +19,7 @@ namespace PAC_MAN
         public Menu()
         {
             InitializeComponent();
-            PacManPictureBox.Image = Image.FromFile("pacman(dolu).gif");
+            PacManPictureBox.Image = Image.FromFile("../../../grafika/pacman(dolu).gif");
             // make the image fit the picturebox
             PacManPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
 
@@ -37,7 +37,7 @@ namespace PAC_MAN
                     PacManPictureBox.Top += 1;
                     if (PacManPictureBox.Top >= panel1.Height - PacManPictureBox.Height)
                     {
-                        PacManPictureBox.Image = Image.FromFile("pacman.gif");
+                        PacManPictureBox.Image = Image.FromFile("../../../grafika/pacman.gif");
                         smer = SmerPacmana.doprava;
                     }
                     break;
@@ -45,7 +45,7 @@ namespace PAC_MAN
                     PacManPictureBox.Left += 1;
                     if (PacManPictureBox.Left >= panel1.Width - PacManPictureBox.Width)
                     {
-                        PacManPictureBox.Image = Image.FromFile("pacman(nahoru).gif");
+                        PacManPictureBox.Image = Image.FromFile("../../../grafika/pacman(nahoru).gif");
                         smer = SmerPacmana.nahoru;
                     }
                     break;
@@ -53,7 +53,7 @@ namespace PAC_MAN
                     PacManPictureBox.Top -= 1;
                     if (PacManPictureBox.Top <= 0)
                     {
-                        PacManPictureBox.Image = Image.FromFile("pacman(doleva).gif");
+                        PacManPictureBox.Image = Image.FromFile("../../../grafika/pacman(doleva).gif");
                         smer = SmerPacmana.doleva;
                     }
                     break;
@@ -61,7 +61,7 @@ namespace PAC_MAN
                     PacManPictureBox.Left -= 1;
                     if (PacManPictureBox.Left <= 0)
                     {
-                        PacManPictureBox.Image = Image.FromFile("pacman(dolu).gif");
+                        PacManPictureBox.Image = Image.FromFile("../../../grafika/pacman(dolu).gif");
                         smer = SmerPacmana.dolu;
                     }
                     break;
@@ -107,7 +107,12 @@ namespace PAC_MAN
 
         private void button4_Click(object sender, EventArgs e)
         {
+            DataSent(null, "Settings");
+        }
 
+        private void Menu_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }

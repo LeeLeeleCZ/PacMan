@@ -1,7 +1,11 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Timer = System.Windows.Forms.Timer;
+using NAudio;
+using NAudio.Wave;
 
 namespace PAC_MAN
 {
@@ -23,6 +27,9 @@ namespace PAC_MAN
         private const int AW_HIDE = 0x00010000;
         #endregion
         Form activeForm;
+        private IWavePlayer waveOutDevice;
+        private AudioFileReader audioFileReader;
+        private bool HrajeHudba;
         public MainForm()
         {
             InitializeComponent();
@@ -52,22 +59,50 @@ namespace PAC_MAN
             var menu = new Menu();
             otevritForm(menu);
             menu.DataSent += OptionDataSent;
-            this.Move += MainForm_Move;
+            //this.Move += MainForm_Move;
 
-        }
+            waveOutDevice = new WaveOut();
+            audioFileReader = new AudioFileReader("../../../Zvuky/PAC-MAN Theme.mp3");
 
-        private void MainForm_Move(object? sender, EventArgs e)
-        {
-            foreach (Form form in Application.OpenForms)
+            waveOutDevice.PlaybackStopped += (sender, args) =>
             {
-                if (form is LevelEditorOptions)
-                {
-                    LevelEditorOptions editor = (LevelEditorOptions)form;
-                    // set editor location to be in center
-                    editor.Location = new Point(this.Location.X + this.Width+25, this.Location.Y + this.Height / 2 - editor.Height / 2+25);
-                    //editor.Location = new Point(this.Location.X + this.Width, this.Location.Y);
-                }
+                waveOutDevice.Stop();
+                audioFileReader.Dispose();
+                waveOutDevice.Dispose();
+
+                waveOutDevice.Init(audioFileReader);
+                waveOutDevice.Play();
+            };
+
+            if (Nastavení.Hudba)
+            {
+                waveOutDevice.Init(audioFileReader);
+                waveOutDevice.Play();
+                HrajeHudba = true;
             }
+
+            Nastavení.SettingsUpdate += () =>
+            {
+                if (Nastavení.Hudba)
+                {
+                    if (!HrajeHudba)
+                    {
+                        waveOutDevice.Init(audioFileReader);
+                        waveOutDevice.Play();
+                        HrajeHudba = true;
+                    }
+                }
+                else
+                {
+                    if (HrajeHudba)
+                    {
+                        waveOutDevice.Stop();
+                        audioFileReader.Dispose();
+                        waveOutDevice.Dispose();
+                        HrajeHudba = false;
+                    }
+                }
+            };
         }
 
         private void OptionDataSent(Form? sender, string msg)
@@ -86,25 +121,65 @@ namespace PAC_MAN
                     menu.DataSent += OptionDataSent;
                     break;
                 case "Game":
-                    //input box which inputs string
-                    string mapName = Microsoft.VisualBasic.Interaction.InputBox("Kterou mapu chcete naèíst?", "Naètení mapy", "level1");
-                    var game = new game(mapName);
-                    otevritForm(game);
-                    game.DataSent += OptionDataSent;
+                    MapSelector selector = new MapSelector();
+                    selector.DataSent += (sender, msg) =>
+                    {
+                        if (sender != null)
+                            sender.Close();
+                        if (msg != null)
+                        {
+                            var game = new game(this, msg);
+                            otevritForm(game);
+                            game.DataSent += OptionDataSent;
+                        }
+                    };
+                    otevritForm(selector);
                     break;
                 case "LevelEditor":
-                    var LevelEditor = new LevelEditor(this);
-                    otevritForm(LevelEditor);
-                    LevelEditor.DataSent += OptionDataSent;
+                    var ChooseMap = new LevelEditorMapSelect();
+                    ChooseMap.DataSent += (sender, msg) =>
+                    {
+                        if (sender != null)
+                            sender.Close();
+                        if (msg != null)
+                        {
+                            if (msg == "Nova")
+                            {
+                                var LevelEditor = new LevelEditor(this, null);
+                                otevritForm(LevelEditor);
+                                LevelEditor.DataSent += OptionDataSent;
+                            }
+                            else if (msg == "Nacist")
+                            {
+                                var editor = new MapSelector();
+                                otevritForm(editor);
+                                editor.DataSent += (s, e) =>
+                                {
+                                    if (sender != null)
+                                        sender.Close();
+                                    if (msg != null)
+                                    {
+                                        var LevelEditor = new LevelEditor(this, e);
+                                        otevritForm(LevelEditor);
+                                        LevelEditor.DataSent += OptionDataSent;
+                                    }
+                                };
+                            }
+                        }
+                    };
+                    otevritForm(ChooseMap);
                     break;
                 case "Settings":
+                    var settings = new Settings();
+                    
+                    otevritForm(settings);
                     break;
             }
         }
 
         public static void wait(int milliseconds)
         {
-            var timer1 = new System.Windows.Forms.Timer();
+            var timer1 = new Timer();
             if (milliseconds == 0 || milliseconds < 0) return;
 
             timer1.Interval = milliseconds;
@@ -125,15 +200,21 @@ namespace PAC_MAN
 
         private void btnMinimize_Click(object? sender, EventArgs e)
         {
-            // animace pro minimalizaci
-            for (int i = 0; i < 25; i++)
+            
+            var timer1 = new Timer();
+            timer1.Interval = 1;
+            timer1.Tick += (s, e) =>
             {
                 this.Opacity -= 0.04;
-                wait(1);
-            }
-
-            this.WindowState = FormWindowState.Minimized;
-            Opacity = 1;
+                if (this.Opacity == 0)
+                {
+                    timer1.Enabled = false;
+                    timer1.Stop();
+                    this.WindowState = FormWindowState.Minimized;
+                    Opacity = 1;
+                }
+            };
+            timer1.Enabled = true;
         }
 
         private void btnClose_Click(object? sender, EventArgs e)

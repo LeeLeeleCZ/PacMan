@@ -45,6 +45,9 @@
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.LevelEditor_Paint);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.LevelEditor_KeyPress);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LevelEditor_MouseClick);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LevelEditor_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.LevelEditor_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LevelEditor_MouseUp);
             this.ResumeLayout(false);
 
         }
