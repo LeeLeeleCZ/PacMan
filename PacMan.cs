@@ -17,64 +17,12 @@ namespace PAC_MAN
         public int x = 0;
         public int y = 0;
         Graphics g;
-        /*
+        
         public int X { 
             get { return x; } 
-            set {
-
-                if (x < value)
-                {
-                    if (Parent.Width <= this.X * 50 + 50) return;
-                    if (map[this.X + 1, this.Y] == 1) return;
-                    if (map[this.X + 1, this.Y] == -1)
-                    {
-                        waveOutDevice.Stop();
-                        waveOutDevice.Play();
-                        score++;
-                        Parent.pocetGoldu--;
-                        map[this.X + 1, this.Y] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20 + 50, this.Y * 50 + 20, 10, 10);
-                    }
-                    this.smer = Smer.Doprava;
-                    PohybujeSe = true;
-                    this.Image = Image.FromFile("../../../grafika/pacman.gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        this.Left += 2;
-                        MainForm.wait(1);
-                    }
-                    x = value;
-                }
-                else if (x > value)
-                {
-                    if (this.X <= 0) return;
-                    if (map[this.X - 1, this.Y] == 1) return;
-                    if (map[this.X - 1, this.Y] == -1)
-                    {
-                        waveOutDevice.Play();
-                        score++;
-                        Parent.pocetGoldu--;
-                        map[this.X - 1, this.Y] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20 - 50, this.Y * 50 + 20, 10, 10);
-                    }
-                    this.smer = Smer.Doleva;
-                    PohybujeSe = true;
-                    this.Image = Image.FromFile("../../../grafika/pacman(doleva).gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        this.Left -= 2;
-                        MainForm.wait(1);
-                    }
-                    x = value;
-                }
-                else if (x == value)
-                {
-                    return;
-                }
-
-                
-                PohybujeSe = false;
-                GC.Collect();
+            set
+            {
+                x = value;
             } 
         }
         
@@ -82,93 +30,81 @@ namespace PAC_MAN
             get { return y; }
             set
             {
-                if (y < value)
-                {
-                    if (Parent.Height <= this.Y * 50 + 50) return;
-                    if (map[this.X, this.Y + 1] == 1) return;
-                    if (map[this.X, this.Y + 1] == -1)
-                    {
-                        waveOutDevice.Play();
-                        score++;
-                        Parent.pocetGoldu--;
-                        map[this.X, this.Y + 1] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20, this.Y * 50 + 20 + 50, 10, 10);
-                    }
-                    this.smer = Smer.Dolu;
-                    PohybujeSe = true;
-                    this.Image = Image.FromFile("../../../grafika/pacman(dolu).gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        this.Top += 2;
-                        MainForm.wait(1);
-                    }
-                    y = value;
-                }
-                else if (y > value)
-                {
-                    if (this.Y <= 0) return;
-                    if (map[this.X, this.Y - 1] == 1) return;
-                    if (map[this.X, this.Y - 1] == -1)
-                    {
-                        waveOutDevice.Play();
-                        score++;
-                        Parent.pocetGoldu--;
-                        map[this.X, this.Y - 1] = 0;
-                        g.FillEllipse(new SolidBrush(Color.Black), this.X * 50 + 20, this.Y * 50 + 20 - 50, 10, 10);
-                    }
-                    this.smer = Smer.Nahoru;
-                    PohybujeSe = true;
-                    this.Image = Image.FromFile("../../../grafika/pacman(nahoru).gif");
-                    for (int i = 0; i < 25; i++)
-                    {
-                        this.Top -= 2;
-                        MainForm.wait(1);
-                    }
-                    y = value;
-                }
-                else if (y == value)
-                {
-                    return;
-                }
-
-                
-                PohybujeSe = false;
-                GC.Collect();
+                y = value;
             }
         }
-        
-
-        bool PohybujeSe {
-            get { return pohybujeSe; }
-            set { pohybujeSe = value;
-                if (!value)
-                {
-                    switch (smer)
-                    {
-                        case Smer.Doleva:
-                            this.X--;
-                            break;
-                        case Smer.Doprava:
-                            this.X++;
-                            break;
-                        case Smer.Nahoru:
-                            this.Y--;
-                            break;
-                        case Smer.Dolu:
-                            this.Y++;
-                            break;
-                    }
-                }
-
-            }
-        }
-        */
 
         private int[,] map;
         private game Parent;
         public bool pohybujeSe = false;
-        public Smer _smer = Smer.Nikam;
-        public Smer smer { get { return _smer; } set { _smer = value;}   }
+        private Smer _smer = Smer.Nikam;
+
+        private Smer smer
+        {
+            get { return _smer; }
+            set
+            {
+                _smer = value;
+
+                switch (value)
+                {
+                    case Smer.Doleva:
+                        this.Image = Image.FromFile("../../../grafika/pacman(doleva).gif");
+                        break;
+                    case Smer.Doprava:
+                        this.Image = Image.FromFile("../../../grafika/pacman.gif");
+                        break;
+                    case Smer.Nahoru:
+                        this.Image = Image.FromFile("../../../grafika/pacman(nahoru).gif");
+                        break;
+                    case Smer.Dolu:
+                        this.Image = Image.FromFile("../../../grafika/pacman(dolu).gif");
+                        break;
+                }
+            }
+        }
+        private Smer budouciSmer = Smer.Nikam;
+        public Smer BudouciSmer
+        {
+            get { return budouciSmer; }
+            set
+            {
+                if (smer == Smer.Nikam)
+                    smer = value;
+                else
+                {
+                    switch (value)
+                    {
+                        case Smer.Doleva:
+                            if (smer == Smer.Doprava)
+                                smer = value;
+                            else
+                                budouciSmer = value;
+                            break;
+                        case Smer.Doprava:
+                            if (smer == Smer.Doleva)
+                                smer = value;
+                            else
+                                budouciSmer = value;
+                            break;
+                        case 
+                            Smer.Nahoru:
+                            if (smer == Smer.Dolu)
+                                smer = value;
+                            else
+                                budouciSmer = value;
+                            break;
+                        case Smer.Dolu:
+                            if (smer == Smer.Nahoru)
+                                smer = value;
+                            else
+                                budouciSmer = value;
+                            break;
+
+                    }
+                }
+            }
+        }
         private Timer timer = new Timer();
 
         public PacMan(int x, int y, int[,] map, game parent)
@@ -201,22 +137,124 @@ namespace PAC_MAN
 
         private void timer_Tick(object? sender, EventArgs e)
         {
+            if (this.Location.X % 50 == 0 && this.Location.Y % 50 == 0)
+            {
+                x = this.Location.X / 50;
+                y = this.Location.Y / 50;
+                if(!MuzeDoSmeru(BudouciSmer))
+                    budouciSmer = Smer.Nikam;
+                if (BudouciSmer != null && BudouciSmer != Smer.Nikam)
+                    smer = BudouciSmer;
+            }
             if (smer == Smer.Nikam) return;
             switch (smer)
             {
+                case Smer.Doleva:
+                    if (MuzeDoSmeru(Smer.Doleva))
+                    {
+                        SebratCoin();
+                        this.Location = new Point(this.Location.X - 2, this.Location.Y);
+                        return;
+                    }
+                    else
+                        smer = Smer.Nikam;
+                    
+                    break;
                 case Smer.Nahoru:
-                    this.y--;
+                    if (MuzeDoSmeru(Smer.Nahoru))
+                    {
+                        SebratCoin();
+                        this.Location = new Point(this.Location.X, this.Location.Y - 2);
+                        return;
+                    }
+                    else
+                        smer = Smer.Nikam;
+                    
                     break;
                 case Smer.Doprava:
-                    this.x++;
+                    if (MuzeDoSmeru(Smer.Doprava))
+                    {
+                        SebratCoin();
+                        this.Location = new Point(this.Location.X + 2, this.Location.Y);
+                        return;
+                    }
+                    else
+                        smer = Smer.Nikam;
+                    
                     break;
                 case Smer.Dolu:
-                    this.y++;
-                    break;
-                case Smer.Doleva:
-                    this.x--;
+                    if (MuzeDoSmeru(Smer.Dolu))
+                    {
+                        SebratCoin();
+                        this.Location = new Point(this.Location.X, this.Location.Y + 2);
+                        return;
+                    }
+                    else
+                        smer = Smer.Nikam;
+                    
                     break;
             }
+            GC.Collect();
+        }
+
+        private void SebratCoin()
+        {
+            if (this.map[this.X, this.Y] == -1)
+            {
+                this.map[this.X, this.Y] = 0;
+                Parent.pocetGoldu--;
+                score++;
+                Graphics g = Graphics.FromImage(Parent.btm);
+                g.FillEllipse(new SolidBrush(Color.Black), x * 50 + 20, y * 50 + 20, 10, 10);
+            }
+        }
+
+        private bool MuzeDoSmeru(Smer smer_)
+        {
+            switch (smer_)
+            {
+                case Smer.Doleva:
+                    try
+                    {
+                        if (this.map[this.X - 1, this.Y] != 1) return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                    break;
+                case Smer.Nahoru:
+                    try
+                    {
+                        if (this.map[this.X, this.Y - 1] != 1) return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                    break;
+                case Smer.Doprava:
+                    try
+                    {
+                        if (this.map[this.X + 1, this.Y] != 1) return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                    break;
+                case Smer.Dolu:
+                    try
+                    {
+                        if (this.map[this.X, this.Y + 1] != 1) return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                    break;
+            }
+            return false;
         }
 
         public enum Smer

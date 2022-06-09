@@ -26,6 +26,7 @@ namespace PAC_MAN
         private Graphics g;
         private bool KliknutoNaZed;
         private Mode modEditu = Mode.EditWalls;
+        private bool PacmanExists = false;
 
         public Mode ModEditu
         {
@@ -129,24 +130,77 @@ namespace PAC_MAN
         }
 
         private void LevelEditor_MouseClick(object sender, MouseEventArgs e)
-        {/*
-            int x = e.X / 50;
-            int y = e.Y / 50;
-            Graphics g = Graphics.FromImage(btm);
-
-            if (pole[x, y] == 1)
+        {
+            if (ModEditu == Mode.EditGhosts)
             {
+                int x = e.X / 50;
+                int y = e.Y / 50;
+
+                if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
+                    return;
+
+                if (pole[x, y] != 0)
+                    return;
+
+                pole[x, y] = 3;
+                PictureBox Pbox = new PictureBox();
+                Pbox.Size = new Size(50, 50);
+                Pbox.Location = new Point(x * 50, y * 50);
+                Pbox.Image = Image.FromFile("../../../grafika/ghost.png");
+                Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                Pbox.BackColor = Color.Transparent;
+                Pbox.Tag = "Ghost";
+                Controls.Add(Pbox);
+                Pbox.Click += PboxClick;
+            }
+            else if (ModEditu == Mode.EditPacMan)
+            {
+                if (PacmanExists)
+                    return;
+                else
+                    PacmanExists = true;
+                int x = e.X / 50;
+                int y = e.Y / 50;
+
+                if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
+                    return;
+
+                if (pole[x, y] != 0)
+                    return;
+
+                pole[x, y] = 2;
+                PictureBox Pbox = new PictureBox();
+                Pbox.Size = new Size(50, 50);
+                Pbox.Location = new Point(x * 50, y * 50);
+                Pbox.Image = Image.FromFile("../../../grafika/pacman.gif");
+                Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                Pbox.BackColor = Color.Transparent;
+                Pbox.Tag = "Pacman";
+                Controls.Add(Pbox);
+                Pbox.Click += PboxClick;
+            }
+        }
+
+        private void PboxClick(object? sender, EventArgs e)
+        {
+            PictureBox Pbox = (PictureBox)sender;
+            if (ModEditu == Mode.EditGhosts && Pbox.Tag == "Ghost")
+            {
+                int x = Pbox.Location.X / 50;
+                int y = Pbox.Location.Y / 50;
                 pole[x, y] = 0;
-                g.FillRectangle(Brushes.Black, x * 50 + 1, y * 50 + 1, 49, 49);
+                Controls.Remove(Pbox);
+                GC.Collect();
             }
-            else
+            else if (ModEditu == Mode.EditPacMan && Pbox.Tag == "Pacman")
             {
-                pole[x, y] = 1;
-                g.FillRectangle(Brushes.Red, x * 50 + 1, y * 50 + 1, 49, 49);
+                PacmanExists = false;
+                int x = Pbox.Location.X / 50;
+                int y = Pbox.Location.Y / 50;
+                pole[x, y] = 0;
+                Controls.Remove(Pbox);
+                GC.Collect();
             }
-
-            this.Invalidate();
-            */
         }
 
         public void saveLevel(int[,] pole)            
@@ -207,6 +261,30 @@ namespace PAC_MAN
                     {
                         g.FillRectangle(Brushes.Blue, i * 50 + 1, y * 50 + 1, 49, 49);
                     }
+                    else if (pole[i, y] == 2)
+                    {
+                        PictureBox Pbox = new PictureBox();
+                        Pbox.Size = new Size(50, 50);
+                        Pbox.Location = new Point(i * 50, y * 50);
+                        Pbox.Image = Image.FromFile("../../../grafika/pacman.gif");
+                        Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        Pbox.BackColor = Color.Transparent;
+                        Pbox.Tag = "Pacman";
+                        Controls.Add(Pbox);
+                        Pbox.Click += PboxClick;
+                    }
+                    else if (pole[i, y] == 3)
+                    {
+                        PictureBox Pbox = new PictureBox();
+                        Pbox.Size = new Size(50, 50);
+                        Pbox.Location = new Point(i * 50, y * 50);
+                        Pbox.Image = Image.FromFile("../../../grafika/ghost.png");
+                        Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        Pbox.BackColor = Color.Transparent;
+                        Pbox.Tag = "Ghost";
+                        Controls.Add(Pbox);
+                        Pbox.Click += PboxClick;
+                    }
                     p++;
                 }
             }
@@ -239,6 +317,10 @@ namespace PAC_MAN
 
                 if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
                     return;
+
+                if (!(pole[x, y] == 0 || pole[x, y] == 1))
+                    return;
+                
 
                 if (KliknutoNaZed)
                 {

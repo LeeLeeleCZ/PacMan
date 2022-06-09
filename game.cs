@@ -24,22 +24,13 @@ namespace PAC_MAN
         public int score = 0;
         //public int PacmanX = 0;
         //public int PacmanY = 0;
-        Ghost ghost;
-        //List<Ghost> listDuchu = new List<Ghost>();
+        //Ghost ghost;
+        List<Ghost> listDuchu = new List<Ghost>();
         Graphics g;
         public PacMan pacman;
         string mapName;
         private Form parent;
         public bool GameOver = false;
-        
-        private static void OnInit()
-        {
-            while (false)
-            {
-                
-            }
-            
-        }
 
         public game(Form parent, string mapName)
         {
@@ -63,12 +54,8 @@ namespace PAC_MAN
             parent.Visible = true;
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
-            pacman = new PacMan(0, 1, map, this);
-            pacman.BringToFront();
-            this.Controls.Add(pacman);
-            ghost = new Ghost(map.GetLength(0) - 1, map.GetLength(1) - 1, map, this);
-            ghost.BringToFront();
-            this.Controls.Add(ghost);
+            
+            
 
 
 
@@ -83,10 +70,6 @@ namespace PAC_MAN
             //timer1.Start();
         }
 
-        private void Ghost_nastavPolohu(Point poloha)
-        {
-            ghost.Location = new System.Drawing.Point(ghost.x * 50, ghost.y * 50);
-        }
 
         private void NacistMapu()
         {
@@ -116,6 +99,19 @@ namespace PAC_MAN
                         listLabelu.Add(lbl);
                         this.Controls.Add(lbl);
 
+                    }
+                    else if (map[x, y] == 2)
+                    {
+                        pacman = new PacMan(x, y, map, this);
+                        pacman.BringToFront();
+                        this.Controls.Add(pacman);
+                    }
+                    else if (map[x, y] == 3)
+                    {
+                        var ghost = new Ghost(x, y, map, this);
+                        ghost.BringToFront();
+                        this.Controls.Add(ghost);
+                        listDuchu.Add(ghost);
                     }
                     else
                     {
@@ -202,16 +198,16 @@ namespace PAC_MAN
             switch(e.KeyChar)
             {
                 case 'w':
-                    pacman.smer = PacMan.Smer.Nahoru;
+                    pacman.BudouciSmer = PacMan.Smer.Nahoru;
                     break;
                 case 'a':
-                    pacman.smer = PacMan.Smer.Doleva;
+                    pacman.BudouciSmer = PacMan.Smer.Doleva;
                     break;
                 case 's':
-                    pacman.smer = PacMan.Smer.Dolu;
+                    pacman.BudouciSmer = PacMan.Smer.Dolu;
                     break;
                 case 'd':
-                    pacman.smer = PacMan.Smer.Doprava;
+                    pacman.BudouciSmer = PacMan.Smer.Doprava;
                     break;
             }
         }
