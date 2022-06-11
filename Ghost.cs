@@ -8,16 +8,16 @@ using System.Threading;
 namespace PAC_MAN
 {
     delegate void NastavPolohu();
-    internal class Ghost : PictureBox
+    internal class ghost : PictureBox
     {
         public int x;
         public int y;
         Smer smer;
         game parent;
         int[,] map;
-        System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+        public System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         
-        public Ghost(int x, int y, int[,] map, game parent)
+        public ghost(int x, int y, int[,] map, game parent)
         {
             this.x = x;
             this.y = y;
@@ -60,11 +60,11 @@ namespace PAC_MAN
                     this.Location = new Point(this.Location.X, this.Location.Y+2);
                     break;
             }
-            if (this.Bounds.IntersectsWith(new Rectangle(parent.pacman.x * 50, parent.pacman.y * 50, 50, 50)) && parent.GameOver == false)
+            if (this.Bounds.IntersectsWith(new Rectangle(parent.Pacman.x * 50, parent.Pacman.y * 50, 50, 50)) && parent.GameOver == false)
             {
                 parent.GameOver = true;
                 timer.Stop();
-                MessageBox.Show("umřel jsi");
+                //MessageBox.Show("umřel jsi");
             }
         }
 

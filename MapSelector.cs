@@ -59,7 +59,6 @@ namespace PAC_MAN
             btm = new Bitmap(panel2.Width, panel2.Height);
             g = Graphics.FromImage(btm);
             map = new int[panel2.Width / 20, panel2.Height / 20];
-            //put every file in the directory to a list
 
             FileInfo[] Files = d.GetFiles("*.xml");
             List<FileInfo> files = new List<FileInfo>();
@@ -74,12 +73,6 @@ namespace PAC_MAN
             
             int pocet = 0;
 
-            /*for (int i = 0; i < files.Count; i++)
-            {
-                if(files[i].Name == "default.xml")
-                    files.RemoveAt(i);
-            }*/
-            
             foreach (FileInfo item in files)
             {
                 Button btn = new Button();
@@ -97,6 +90,17 @@ namespace PAC_MAN
                 panel1.Controls.Add(btn);
                 pocet++;
             }
+
+            if (pocet >= 4)
+            {
+                vScrollBar1.Visible = true;
+                panel1.AutoScroll = false;
+                panel1.VerticalScroll.Enabled = true;
+                panel1.VerticalScroll.Visible = true;
+                panel1.VerticalScroll.Minimum = 0;
+                panel1.VerticalScroll.Maximum = pocet * (50 + 10);
+            }
+            
         }
 
         private List<int> DeserializeXml()
@@ -111,7 +115,6 @@ namespace PAC_MAN
 
         private void NacistMapu()
         {
-            //remove every object in postavy list
             foreach (dynamic item in postavy)
             {
                 panel2.Controls.Remove(item);
@@ -131,18 +134,6 @@ namespace PAC_MAN
             btm = new Bitmap(panel2.Width, panel2.Height);
             Graphics g = Graphics.FromImage(btm);
             panel2.Refresh();
-
-            /*replace all 0 in map with -1
-            for (int i = 0; i < map.GetLength(0); i++)
-            {
-                for (int y = 0; y < map.GetLength(1); y++)
-                {
-                    if (map[i, y] == 0)
-                    {
-                        map[i, y] = -1;
-                    }
-                }
-            }*/
 
             for (int i = 0; i < map.GetLength(0); i++)
             {
@@ -178,7 +169,7 @@ namespace PAC_MAN
                         Pbox.Image = Image.FromFile("../../../grafika/ghost.png");
                         Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
                         Pbox.BackColor = Color.Transparent;
-                        Pbox.Tag = "Ghost";
+                        Pbox.Tag = "ghost";
                         postavy.Add(Pbox);
                         panel2.Controls.Add(Pbox);
                     }
@@ -224,5 +215,9 @@ namespace PAC_MAN
                 DataSent(this, mapName);
             //this.Close();
         }
+
+        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e) => panel1.AutoScrollPosition = new Point(0, vScrollBar1.Value);
+
+        private void panel1_MouseEnter(object sender, EventArgs e) => panel1.Focus();
     }
 }

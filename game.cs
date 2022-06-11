@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using PAC_MAN.Maps;
 
 namespace PAC_MAN
 {
@@ -24,13 +25,39 @@ namespace PAC_MAN
         public int score = 0;
         //public int PacmanX = 0;
         //public int PacmanY = 0;
-        //Ghost ghost;
-        List<Ghost> listDuchu = new List<Ghost>();
+        //ghost ghost;
+        List<ghost> listDuchu = new List<ghost>();
         Graphics g;
-        public PacMan pacman;
+        public pacman Pacman;
         string mapName;
         private Form parent;
-        public bool GameOver = false;
+        private bool gameOver = false;
+        public bool GameOver
+        {
+            get => gameOver;
+            set
+            {
+                if (value)
+                {
+                    m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+                    foreach (ghost g in listDuchu)
+                        g.timer.Stop();
+                    Pacman.timer.Stop();
+                    m_GlobalHook.Dispose();
+                    gameOver = value;
+                    using (var gameOver = new GameOver(parent))
+                    {
+                        var result = gameOver.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            DataSent(this,"Menu");
+                        }
+                    }
+                }
+                else
+                    gameOver = value;
+            }
+        }
 
         public game(Form parent, string mapName)
         {
@@ -55,11 +82,11 @@ namespace PAC_MAN
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
             
-            
+            //this.BackgroundImage = Image.FromFile(@"C:\Users\filip\Videos\Captures\Sea of Thieves 12.02.2022 23_30_47.png");
 
 
 
-            //Ghost ghost2 = new Ghost(map.GetLength(0)-1, 0, map, this);
+            //ghost ghost2 = new ghost(map.GetLength(0)-1, 0, map, this);
 
             //ghost2.BringToFront();
 
@@ -102,13 +129,13 @@ namespace PAC_MAN
                     }
                     else if (map[x, y] == 2)
                     {
-                        pacman = new PacMan(x, y, map, this);
-                        pacman.BringToFront();
-                        this.Controls.Add(pacman);
+                        Pacman = new pacman(x, y, map, this);
+                        Pacman.BringToFront();
+                        this.Controls.Add(Pacman);
                     }
                     else if (map[x, y] == 3)
                     {
-                        var ghost = new Ghost(x, y, map, this);
+                        var ghost = new ghost(x, y, map, this);
                         ghost.BringToFront();
                         this.Controls.Add(ghost);
                         listDuchu.Add(ghost);
@@ -198,16 +225,29 @@ namespace PAC_MAN
             switch(e.KeyChar)
             {
                 case 'w':
-                    pacman.BudouciSmer = PacMan.Smer.Nahoru;
+                    Pacman.BudouciSmer = pacman.Smer.Nahoru;
                     break;
                 case 'a':
-                    pacman.BudouciSmer = PacMan.Smer.Doleva;
+                    Pacman.BudouciSmer = pacman.Smer.Doleva;
                     break;
                 case 's':
-                    pacman.BudouciSmer = PacMan.Smer.Dolu;
+                    Pacman.BudouciSmer = pacman.Smer.Dolu;
                     break;
                 case 'd':
-                    pacman.BudouciSmer = PacMan.Smer.Doprava;
+                    Pacman.BudouciSmer = pacman.Smer.Doprava;
+                    break;
+                case (char)27:
+                    m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+                    m_GlobalHook.Dispose();
+                    Pacman.Dispose();
+                    foreach (var item in listDuchu)
+                    {
+                        item.timer.Stop();
+                        item.Dispose();
+                    }
+                    this.Close();
+                    this.Dispose();
+                    GC.Collect();
                     break;
             }
         }
@@ -251,10 +291,10 @@ namespace PAC_MAN
             parent.Visible = true;
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
-            pacman = new PacMan(0, 0, map, this);
+            pacman = new pacman(0, 0, map, this);
             pacman.BringToFront();
             this.Controls.Add(pacman);
-            ghost = new Ghost(map.GetLength(0) - 1, map.GetLength(1) - 1, map, this);
+            ghost = new ghost(map.GetLength(0) - 1, map.GetLength(1) - 1, map, this);
             ghost.BringToFront();
             this.Controls.Add(ghost);
              */

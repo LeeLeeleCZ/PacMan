@@ -8,7 +8,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace PAC_MAN
 {
-    public class PacMan : PictureBox
+    public class pacman : PictureBox
     {
         IWavePlayer waveOutDevice = new WaveOut();
         AudioFileReader audioFileReader = new AudioFileReader("../../../Zvuky/Pac-Man eating.mp3");
@@ -107,9 +107,9 @@ namespace PAC_MAN
                 }
             }
         }
-        private Timer timer = new Timer();
+        public Timer timer = new Timer();
 
-        public PacMan(int x, int y, int[,] map, game parent)
+        public pacman(int x, int y, int[,] map, game parent)
         {
             g = Graphics.FromImage(parent.btm);
             this.Height = 50;
@@ -136,6 +136,7 @@ namespace PAC_MAN
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
         }
+
 
         private void timer_Tick(object? sender, EventArgs e)
         {

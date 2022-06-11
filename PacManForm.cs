@@ -12,9 +12,12 @@ namespace PAC_MAN
 {
     public partial class PacManForm : Form
     {
-        public PacManForm()
+        public pacman PacMan { get; set; }
+
+        public PacManForm(int x, int y, int[,] map, game parent)
         {
             InitializeComponent();
+            this.PacMan = new pacman(x,y,map,parent);
         }
     }
 }

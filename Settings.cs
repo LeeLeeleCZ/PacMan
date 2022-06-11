@@ -116,12 +116,13 @@ namespace PAC_MAN
                 }
             }
 
+            list.Reverse();
 
             foreach (PictureBox box in list)
             {
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 30; i++)
                 {
-                    box.Left -= 5;
+                    box.Left -= 10;
                     wait(1);
                 }
             }

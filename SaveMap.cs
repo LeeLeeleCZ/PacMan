@@ -31,7 +31,7 @@ namespace PAC_MAN
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.JmenoMapy = richTextBox1.Text;
+            this.JmenoMapy = textBox1.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -39,6 +39,15 @@ namespace PAC_MAN
         private void SaveMap_Load(object sender, EventArgs e)
         {
             this.Location = new Point(parent.Location.X + parent.Width / 2 - this.Width / 2, parent.Location.Y + parent.Height / 2 - this.Height / 2);
+        }
+
+        private void SaveMap_Paint(object sender, PaintEventArgs e)
+        {
+            Pen pen = new Pen(Color.Blue, 5);
+            e.Graphics.DrawLine(pen, 0, 0, this.Width, 0);
+            e.Graphics.DrawLine(pen, 0, 0, 0, this.Height);
+            e.Graphics.DrawLine(pen, 0, this.Height, this.Width, this.Height);
+            e.Graphics.DrawLine(pen, this.Width, 0, this.Width, this.Height);
         }
     }
 }

@@ -4,7 +4,7 @@
     <Compile Update="game.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Ghost.cs">
+    <Compile Update="ghost.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="LevelEditor.cs">
@@ -22,11 +22,17 @@
     <Compile Update="MapSelector.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="GameOver.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="PacMan.cs">
+    <Compile Update="pacman.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="PacManForm.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Update="SaveMap.cs">
       <SubType>Form</SubType>

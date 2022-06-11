@@ -129,15 +129,6 @@ namespace PAC_MAN
             Refresh();
         }
 
-        private void KMEvents_KeyPress(object? sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)27)
-            {
-                
-            }
-
-        }
-
         void nakreslitGrid()
         {
             Graphics g = Graphics.FromImage(btm);
@@ -179,7 +170,7 @@ namespace PAC_MAN
                 Pbox.Image = Image.FromFile("../../../grafika/ghost.png");
                 Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
                 Pbox.BackColor = Color.Transparent;
-                Pbox.Tag = "Ghost";
+                Pbox.Tag = "ghost";
                 Controls.Add(Pbox);
                 Pbox.Click += PboxClick;
             }
@@ -214,7 +205,7 @@ namespace PAC_MAN
         private void PboxClick(object? sender, EventArgs e)
         {
             PictureBox Pbox = (PictureBox)sender;
-            if (ModEditu == Mode.EditGhosts && Pbox.Tag == "Ghost")
+            if (ModEditu == Mode.EditGhosts && Pbox.Tag == "ghost")
             {
                 int x = Pbox.Location.X / 50;
                 int y = Pbox.Location.Y / 50;
@@ -233,13 +224,20 @@ namespace PAC_MAN
             }
         }
 
-        public void saveLevel(int[,] pole)            
+        public void saveLevel(int[,] pole)
         {
+            if (!PacmanExists)
+            {
+                System.Media.SystemSounds.Beep.Play();
+                return;
+            }
             using (var Ulozeni = new SaveMap(parent))
             {
                 var result = Ulozeni.ShowDialog();
                 if (result == DialogResult.OK)
                 {
+                    if (Ulozeni.JmenoMapy == "")
+                        return;
                     List<int> list = new List<int>();
                     foreach (int item in pole)
                     {
@@ -313,7 +311,7 @@ namespace PAC_MAN
                         Pbox.Image = Image.FromFile("../../../grafika/ghost.png");
                         Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
                         Pbox.BackColor = Color.Transparent;
-                        Pbox.Tag = "Ghost";
+                        Pbox.Tag = "ghost";
                         Controls.Add(Pbox);
                         Pbox.Click += PboxClick;
                     }

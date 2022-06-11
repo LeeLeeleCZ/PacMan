@@ -79,3 +79,5 @@ C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\runtimes\win
 C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\filip\source\repos\PAC-MAN\PacMan\bin\Debug\net6.0-windows\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.PacManForm.resources
+C:\Users\filip\source\repos\PAC-MAN\PacMan\obj\Debug\net6.0-windows\PAC_MAN.Maps.GameOver.resources

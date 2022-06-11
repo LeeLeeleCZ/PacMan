@@ -33,6 +33,7 @@ namespace PAC_MAN
         public MainForm()
         {
             InitializeComponent();
+            this.Icon = new Icon(@"../../../grafika/pacman.ico");
             #region PridaniButtonu
             // add close button to panel1
             Button btnClose = new Button();
@@ -59,7 +60,6 @@ namespace PAC_MAN
             var menu = new Menu();
             otevritForm(menu);
             menu.DataSent += OptionDataSent;
-            //this.Move += MainForm_Move;
 
             waveOutDevice = new WaveOut();
             audioFileReader = new AudioFileReader("../../../Zvuky/PAC-MAN Theme.mp3");
@@ -209,11 +209,7 @@ namespace PAC_MAN
             SendMessage(Handle, 0x112, 0xf012, 0);
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-            // draw a 1px height line at the bottom of the panel
-            e.Graphics.DrawLine(Pens.Black, 0, TitleBar.Height - 1, TitleBar.Width, TitleBar.Height - 1);
-        }
+        private void panel1_Paint(object sender, PaintEventArgs e) => e.Graphics.DrawLine(Pens.Black, 0, TitleBar.Height - 1, TitleBar.Width, TitleBar.Height - 1);
 
         public void otevritForm(Form childForm)
         {
@@ -242,31 +238,5 @@ namespace PAC_MAN
             childForm.Visible = true;
             GC.Collect();
         }
-
-        public static Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
-
     }
 }
