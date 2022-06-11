@@ -29,11 +29,21 @@ namespace PAC_MAN
                     mainform.Move += MFmove;
                 }
             }
-            
+
+            returnBtn.BackgroundImage = Image.FromFile("../../../grafika/return-icon-Red.png");
+            returnBtn.BackgroundImageLayout = ImageLayout.Stretch;
+
+            saveBtn.BackgroundImage = Image.FromFile("../../../grafika/CheckMark-Green.png");
+            saveBtn.BackgroundImageLayout = ImageLayout.Stretch;
+
             editGhostsBtn.BackgroundImage = Image.FromFile("../../../grafika/ghost.png");
+            Ghost1Btn.BackgroundImage = Image.FromFile("../../../grafika/ghost-purple.png");
+            Ghost2Btn.BackgroundImage = Image.FromFile("../../../grafika/ghost-teal.png");
             editPacManBtn.BackgroundImage = Image.FromFile("../../../grafika/pacman.gif");
             editGhostsBtn.BackgroundImageLayout = ImageLayout.Stretch;
             editPacManBtn.BackgroundImageLayout = ImageLayout.Stretch;
+            Ghost1Btn.BackgroundImageLayout = ImageLayout.Stretch;
+            Ghost2Btn.BackgroundImageLayout = ImageLayout.Stretch;
 
             Ghost1Btn.Location = new Point(0, 55);
             Ghost2Btn.Location = new Point(0, 55);
@@ -47,15 +57,15 @@ namespace PAC_MAN
         private void button1_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            int aktivovat = 0;
+            Show? zobrazit = Show.Nic;
             switch (btn.Name)
             {
                 case "editGhostsBtn":
                     DataSent(this, LevelEditor.Mode.EditGhosts);
                     if (!Ghost1Btn.Visible)
-                        aktivovat = 1;
+                        zobrazit = Show.Duchove;
                     else
-                        aktivovat = 2;
+                        zobrazit = null;
                     break;
                 case "editPacManBtn":
                     DataSent(this, LevelEditor.Mode.EditPacMan);
@@ -63,39 +73,40 @@ namespace PAC_MAN
                 case "editWallsBtn":
                     DataSent(this, LevelEditor.Mode.EditWalls);
                     break;
+                case "editCoinBtn":
+                    if (!editCoinsBtn.Visible)
+                        zobrazit = Show.Coiny;
+                    else
+                        zobrazit = null;
+                    DataSent(this, LevelEditor.Mode.EditCoin);
+                    break;
+                case "editCoinsBtn":
+                    zobrazit = null;
+                    DataSent(this, LevelEditor.Mode.EditCoins);
+                    break;
                 case "returnBtn":
-                    DataSent(this, LevelEditor.Mode.returnBtn);
+                    DataSent(this, LevelEditor.Mode.ReturnBtn);
+                    break;
+                case "saveBtn":
+                    DataSent(this, LevelEditor.Mode.SaveBtn);
+                    break;
+                case "removeCoinsBtn":
+                    if (!editCoinsBtn.Visible)
+                        zobrazit = Show.Coiny;
+                    else
+                        zobrazit = null;
+                    DataSent(this, LevelEditor.Mode.RemoveCoins);
                     break;
             }
-            if(aktivovat == 1)
-                zobrazDuchy(true);
-            else if (aktivovat == 0)
-                zobrazDuchy(false);
+            if (zobrazit != null)
+                AnimacePosunout((Show)zobrazit);
         }
 
-        private void zobrazDuchy(bool zobrazit)
+        private void AnimacePosunout(Show zobrazit)
         {
-            /*
-            for (int i = 0; i < 28; i++)
+            if (zobrazit == Show.Duchove)
             {
-                Ghost1Btn.Location = Ghost1Btn.Location with {X = Ghost1Btn.Location.X+2};
-                wait(10);
-            }
-            wait(50);
-            for (int i = 0; i < 56; i++)
-            {
-                Ghost2Btn.Location = Ghost2Btn.Location with {X = Ghost2Btn.Location.X+2};
-                wait(10);
-            }
-            wait(50);
-            for (int i = 0; i < 84; i++)
-            {
-                Ghost3Btn.Location = Ghost3Btn.Location with {X = Ghost3Btn.Location.X+2};
-                wait(10);
-            }
-            */
-            if (zobrazit)
-            {
+                SchovatButtony();
                 Ghost1Btn.Visible = true;
                 Ghost2Btn.Visible = true;
                 Ghost3Btn.Visible = true;
@@ -107,23 +118,44 @@ namespace PAC_MAN
                     wait(10);
                 }
             }
-            else
+            else if(zobrazit == Show.Nic)
             {
-                Ghost1Btn.Visible = false;
-                Ghost2Btn.Visible = false;
-                Ghost3Btn.Visible = false;
-                Ghost1Btn.Location = editGhostsBtn.Location;
-                Ghost2Btn.Location = editGhostsBtn.Location;
-                Ghost3Btn.Location = editGhostsBtn.Location;
+                SchovatButtony();
+            }
+            else if (zobrazit == Show.Coiny)
+            {
+                SchovatButtony();
+                editCoinsBtn.Visible = true;
+                removeCoinsBtn.Visible = true;
+                for (int i = 0; i < 28; i++)
+                {
+                    editCoinsBtn.Location = editCoinsBtn.Location with { X = editCoinsBtn.Location.X + 2 };
+                    removeCoinsBtn.Location = removeCoinsBtn.Location with { X = removeCoinsBtn.Location.X + 4 };
+                    wait(10);
+                }
             }
 
         }
 
+        void SchovatButtony()
+        {
+            Ghost1Btn.Visible = false;
+            Ghost2Btn.Visible = false;
+            Ghost3Btn.Visible = false;
+            removeCoinsBtn.Visible = false;
+            editCoinsBtn.Visible = false;
+            Ghost1Btn.Location = editGhostsBtn.Location;
+            Ghost2Btn.Location = editGhostsBtn.Location;
+            Ghost3Btn.Location = editGhostsBtn.Location;
+            editCoinsBtn.Location = editCoinBtn.Location;
+            removeCoinsBtn.Location = editCoinBtn.Location;
+        }
+
         private void returnBtn_Paint(object sender, PaintEventArgs e)
         {
-            Pen pen = new Pen(Color.Red, 2);
+            /*Pen pen = new Pen(Color.Red, 2);
             e.Graphics.DrawLine(pen, 0, 0, returnBtn.Width, returnBtn.Height);
-            e.Graphics.DrawLine(pen, returnBtn.Width, 0, 0, returnBtn.Height);
+            e.Graphics.DrawLine(pen, returnBtn.Width, 0, 0, returnBtn.Height);*/
         }
 
         //private void Mainform_DataSent(string msg)
@@ -152,6 +184,76 @@ namespace PAC_MAN
             while (timer1.Enabled)
             {
                 Application.DoEvents();
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        enum Show
+        {
+            Nic,
+            Duchove,
+            Coiny
+        }
+
+        private void editCoinBtn_Paint(object sender, PaintEventArgs e)
+        {
+            //_sender.Text = "Coin";
+            e.Graphics.FillEllipse(new SolidBrush(Color.Gold), 15, 15, 20, 20);
+        }
+
+        private void editCoinsBtn_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.FillEllipse(new SolidBrush(Color.Gold), 10, 10, 10, 10);
+            e.Graphics.FillEllipse(new SolidBrush(Color.Gold), 30, 10, 10, 10);
+            e.Graphics.FillEllipse(new SolidBrush(Color.Gold), 10, 30, 10, 10);
+            e.Graphics.FillEllipse(new SolidBrush(Color.Gold), 30, 30, 10, 10);
+        }
+
+        private void removeCoinsBtn_Paint(object sender, PaintEventArgs e)
+        {
+            Button _sender = (Button) sender;
+            e.Graphics.FillEllipse(new SolidBrush(Color.Gold), 15, 15, 20, 20);
+
+            //draw a red line from left upper corner to right bottom corner
+            e.Graphics.DrawLine(new Pen(Color.Red, 5), 10, 10, _sender.Width-10, _sender.Height-10);
+        }
+
+        private void LevelEditorOptions_MouseHover(object sender, EventArgs e)
+        {
+            Button _sender = (Button)sender;
+            switch (_sender.Name)
+            {
+                case "editGhostsBtn":
+                    //toolTip1.Show("Edit ghosts", _sender);
+                    break;
+                case "editCoinBtn":
+                    toolTip1.Show("Edit coins", _sender);
+                    break;
+                case "editCoinsBtn":
+                    toolTip1.Show("Place coins to empty spaces", _sender);
+                    break;
+                case "removeCoinsBtn":
+                    toolTip1.Show("Remove coins", _sender);
+                    break;
+                case "Ghost1Btn":
+                    toolTip1.Show("Basic ghost", _sender);
+                    break;
+                case "Ghost2Btn":
+                    toolTip1.Show("Tracker ghost", _sender);
+                    break;
+                case "Ghost3Btn":
+                    toolTip1.Show("Smart ghost", _sender);
+                    break;
+                case "saveBtn":
+                    toolTip1.Show("Save map", _sender);
+                    break;
+                case "returnBtn":
+                    toolTip1.Show("Return to main menu", _sender);
+                    break;
             }
         }
     }

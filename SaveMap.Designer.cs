@@ -100,6 +100,7 @@
             this.Name = "SaveMap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SaveMap";
+            this.Load += new System.EventHandler(this.SaveMap_Load);
             this.ResumeLayout(false);
 
         }

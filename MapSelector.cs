@@ -8,7 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Reflection.Emit;
 using System.Xml.Serialization;
+using Label = System.Windows.Forms.Label;
 
 namespace PAC_MAN
 {
@@ -22,6 +24,8 @@ namespace PAC_MAN
         public int pocetGoldu;
         private Graphics g;
         private Button selectedbutton;
+        List<dynamic> postavy = new List<dynamic>();
+
         public Button SelectedButton
         {
             get { return selectedbutton; }
@@ -107,6 +111,13 @@ namespace PAC_MAN
 
         private void NacistMapu()
         {
+            //remove every object in postavy list
+            foreach (dynamic item in postavy)
+            {
+                panel2.Controls.Remove(item);
+            }
+            postavy.Clear();
+            
             List<int> list = DeserializeXml();
             int p = 0;
             for (int i = 0; i < map.GetLength(0); i++)
@@ -121,7 +132,7 @@ namespace PAC_MAN
             Graphics g = Graphics.FromImage(btm);
             panel2.Refresh();
 
-            //replace all 0 in map with -1
+            /*replace all 0 in map with -1
             for (int i = 0; i < map.GetLength(0); i++)
             {
                 for (int y = 0; y < map.GetLength(1); y++)
@@ -131,7 +142,7 @@ namespace PAC_MAN
                         map[i, y] = -1;
                     }
                 }
-            }
+            }*/
 
             for (int i = 0; i < map.GetLength(0); i++)
             {
@@ -146,6 +157,30 @@ namespace PAC_MAN
                         
                         g.FillEllipse(new SolidBrush(Color.Gold), i * 20+8, y * 20+8, 4, 4);
 
+                    }
+                    else if (map[i, y] == 2)
+                    {
+                        PictureBox Pbox = new PictureBox();
+                        Pbox.Size = new Size(20, 20);
+                        Pbox.Location = new Point(i * 20, y * 20);
+                        Pbox.Image = Image.FromFile("../../../grafika/pacman.gif");
+                        Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        Pbox.BackColor = Color.Transparent;
+                        Pbox.Tag = "Pacman";
+                        postavy.Add(Pbox);
+                        panel2.Controls.Add(Pbox);
+                    }
+                    else if (map[i, y] == 3)
+                    {
+                        PictureBox Pbox = new PictureBox();
+                        Pbox.Size = new Size(20, 20);
+                        Pbox.Location = new Point(i * 20, y * 20);
+                        Pbox.Image = Image.FromFile("../../../grafika/ghost.png");
+                        Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        Pbox.BackColor = Color.Transparent;
+                        Pbox.Tag = "Ghost";
+                        postavy.Add(Pbox);
+                        panel2.Controls.Add(Pbox);
                     }
                 }
             }

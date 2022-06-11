@@ -113,7 +113,7 @@ namespace PAC_MAN
                         this.Controls.Add(ghost);
                         listDuchu.Add(ghost);
                     }
-                    else
+                    else if (map[x, y] == -1)
                     {
                         //draw a gold coin on the map using graphics
                         map[x, y] = -1;

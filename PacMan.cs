@@ -73,6 +73,7 @@ namespace PAC_MAN
                     smer = value;
                 else
                 {
+                    /*
                     switch (value)
                     {
                         case Smer.Doleva:
@@ -101,7 +102,8 @@ namespace PAC_MAN
                                 budouciSmer = value;
                             break;
 
-                    }
+                    }*/
+                    budouciSmer = value;
                 }
             }
         }

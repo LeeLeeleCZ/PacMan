@@ -25,8 +25,10 @@ namespace PAC_MAN
             */
             Nastavení.SettingsUpdate += settings_update;
             settings_update();
+
             
-           
+            button1.BackgroundImage = Image.FromFile("../../../grafika/return-icon-Red.png");
+            button1.BackgroundImageLayout = ImageLayout.Stretch;
         }
 
         private void settings_update()
@@ -81,9 +83,9 @@ namespace PAC_MAN
 
         private void button1_Paint(object sender, PaintEventArgs e)
         {
-            Pen pen = new Pen(Color.Red, 2);
+            /*Pen pen = new Pen(Color.Red, 2);
             e.Graphics.DrawLine(pen, 0, 0, button1.Width, button1.Height);
-            e.Graphics.DrawLine(pen, button1.Width, 0, 0, button1.Height);
+            e.Graphics.DrawLine(pen, button1.Width, 0, 0, button1.Height);*/
         }
         
         private void pictureBox4_Click(object sender, EventArgs e)

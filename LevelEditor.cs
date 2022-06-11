@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,6 @@ namespace PAC_MAN
 {
     public partial class LevelEditor : Form
     {
-        private readonly IKeyboardMouseEvents KMEvents;
         public event DataSentHandler DataSent;
         Bitmap btm;
         int[,] pole;
@@ -27,6 +27,7 @@ namespace PAC_MAN
         private bool KliknutoNaZed;
         private Mode modEditu = Mode.EditWalls;
         private bool PacmanExists = false;
+        private MainForm parent;
 
         public Mode ModEditu
         {
@@ -36,11 +37,23 @@ namespace PAC_MAN
             }
             set
             {
-                if (value == Mode.returnBtn)
+                if (value == Mode.ReturnBtn)
                 {
                     this.Close();
                     EditorOptions.Close();
                 }
+                else if (value == Mode.EditCoins)
+                {
+                    PridejCoiny(true);
+                    modEditu = Mode.EditCoin;
+                }
+                else if (value == Mode.RemoveCoins)
+                {
+                    PridejCoiny(false);
+                    modEditu = Mode.EditCoin;
+                }
+                else if (value == Mode.SaveBtn)
+                    saveLevel(pole);
                 else
                 {
                     modEditu = value;
@@ -50,9 +63,8 @@ namespace PAC_MAN
         
         public LevelEditor(MainForm parent, string? mapName)
         {
+            this.parent = parent;
             this.mapName = mapName;
-            KMEvents = Hook.AppEvents();
-            KMEvents.KeyPress += KMEvents_KeyPress;
             InitializeComponent();
             btm = new Bitmap(this.Width, this.Height);
             nakreslitGrid();
@@ -81,29 +93,47 @@ namespace PAC_MAN
         }
 
         private void EODataSent(Form? sender, Mode mode) => ModEditu = mode;
+        /*
+        {
+            ModEditu = mode;
+            /*
+            if (mode == Mode.EditCoins)
+            {
+                PridejCoiny(true);
+                modEditu = Mode.EditCoin;
+            }
+            else if (mode == Mode.RemoveCoins)
+            {
+                PridejCoiny(false);
+                modEditu = Mode.EditCoin;
+            }
+            else
+                ModEditu = mode;
+            
+        }*/
+
+        private void PridejCoiny(bool pridat)
+        {
+            // replace every int in pole with 1
+            for (int i = 0; i < pole.GetLength(0); i++)
+            {
+                for (int j = 0; j < pole.GetLength(1); j++)
+                {
+                    if (pole[i, j] == 0 || pole[i, j] == -1)
+                    {
+                        pole[i, j] = pridat ? -1 : 0;
+                        g.FillEllipse(pridat ? Brushes.Yellow : Brushes.Black, i * 50 + 20, j * 50 + 20, 10, 10);
+                    }
+                }
+            }
+            Refresh();
+        }
 
         private void KMEvents_KeyPress(object? sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)27)
             {
-                var Ulozeni = new SaveMap();
-                Ulozeni.DataSent += (sender, name) =>
-                {
-                    if(sender!=null)
-                        sender.Close();
-                    if (name != null)
-                    {
-
-                    }
-                };
-                Ulozeni.ShowDialog();
-                saveLevel(pole);
-                //DataSent("Menu");
-                DataSent(this, "Menu");
-                this.Close();
-                this.Dispose();
-                EditorOptions.Dispose();
-                //this = null;
+                
             }
 
         }
@@ -205,26 +235,28 @@ namespace PAC_MAN
 
         public void saveLevel(int[,] pole)            
         {
-            List<int> list = new List<int>();
-            //for (int i = 0; i < pole.GetLength(0); i++)
-            //{
-            //    for (int j = 0; j < pole.GetLength(1); j++)
-            //    {
-            //        list.Add(pole[i, j]);
-            //    }
-            //}
-
-            foreach (int item in pole)
+            using (var Ulozeni = new SaveMap(parent))
             {
-                list.Add(item);
-            }
-            
-            string filename = Microsoft.VisualBasic.Interaction.InputBox("Zadejte jméno levelu:", "Uložení mapy", "level1");
-            XmlSerializer serializer = new XmlSerializer(typeof(List<int>));
+                var result = Ulozeni.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    List<int> list = new List<int>();
+                    foreach (int item in pole)
+                    {
+                        list.Add(item);
+                    }
+                    XmlSerializer serializer = new XmlSerializer(typeof(List<int>));
 
-            using (FileStream fs = new FileStream($"..//..//..//Maps//{filename}.xml", FileMode.Create))
-            {
-                serializer.Serialize(fs, list);
+                    using (FileStream fs = new FileStream($"..//..//..//Maps//{Ulozeni.JmenoMapy}.xml", FileMode.Create))
+                    {
+                        serializer.Serialize(fs, list);
+                    }
+                    
+                    EditorOptions.Close();
+                    EditorOptions.Dispose();
+                    Close();
+                    Dispose();
+                }
             }
         }
 
@@ -285,6 +317,11 @@ namespace PAC_MAN
                         Controls.Add(Pbox);
                         Pbox.Click += PboxClick;
                     }
+                    else if (pole[i, y] == -1)
+                    {
+                        pole[i, y] = -1;
+                        g.FillEllipse(new SolidBrush(Color.Gold), i * 50 + 20, y * 50 + 20, 10, 10);
+                    }
                     p++;
                 }
             }
@@ -295,7 +332,7 @@ namespace PAC_MAN
             int x = e.X / 50;
             int y = e.Y / 50;
             
-            if (pole[x, y] == 1)
+            if (pole[x, y] == 1 || pole[x, y] == -1)
             {
                 KliknutoNaZed = true;
             }
@@ -309,31 +346,59 @@ namespace PAC_MAN
 
         private void LevelEditor_MouseMove(object sender, MouseEventArgs e)
         {
-            if(ModEditu != Mode.EditWalls) return;
+            if(!(ModEditu == Mode.EditWalls || ModEditu == Mode.EditCoin)) return;
             if (HoldingMouse)
             {
-                int x = e.X / 50;
-                int y = e.Y / 50;
-
-                if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
-                    return;
-
-                if (!(pole[x, y] == 0 || pole[x, y] == 1))
-                    return;
-                
-
-                if (KliknutoNaZed)
+                if(modEditu == Mode.EditWalls)
                 {
-                    pole[x, y] = 0;
-                    g.FillRectangle(Brushes.Black, x * 50 + 1, y * 50 + 1, 49, 49);
-                }
-                else
-                {
-                    pole[x, y] = 1;
-                    g.FillRectangle(Brushes.Blue, x * 50 + 1, y * 50 + 1, 49, 49);
-                }
+                    int x = e.X / 50;
+                    int y = e.Y / 50;
 
-                this.Invalidate();
+                    if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
+                        return;
+
+                    if (!(pole[x, y] == 0 || pole[x, y] == 1))
+                        return;
+
+
+                    if (KliknutoNaZed)
+                    {
+                        pole[x, y] = 0;
+                        g.FillRectangle(Brushes.Black, x * 50 + 1, y * 50 + 1, 49, 49);
+                    }
+                    else
+                    {
+                        pole[x, y] = 1;
+                        g.FillRectangle(Brushes.Blue, x * 50 + 1, y * 50 + 1, 49, 49);
+                    }
+
+                    this.Invalidate();
+                }
+                else if (modEditu == Mode.EditCoin)
+                {
+                    int x = e.X / 50;
+                    int y = e.Y / 50;
+
+                    if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
+                        return;
+
+                    if (!(pole[x, y] == 0 || pole[x, y] == -1))
+                        return;
+
+
+                    if (KliknutoNaZed)
+                    {
+                        pole[x, y] = 0;
+                        g.FillEllipse(Brushes.Black, x * 50 + 20, y * 50 + 20, 10, 10);
+                    }
+                    else
+                    {
+                        pole[x, y] = -1;
+                        g.FillEllipse(Brushes.Yellow, x * 50 + 20, y * 50 + 20, 10, 10);
+                    }
+
+                    this.Invalidate();
+                }
             }
         }
 
@@ -348,7 +413,11 @@ namespace PAC_MAN
             EditWalls,
             EditGhosts,
             EditPacMan,
-            returnBtn,
+            ReturnBtn,
+            SaveBtn,
+            EditCoins,
+            EditCoin,
+            RemoveCoins
         }
     }
 }
