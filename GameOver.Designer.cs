@@ -70,13 +70,13 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(207, 118);
             this.button2.TabIndex = 2;
-            this.button2.Text = "Save to database";
+            this.button2.Text = "Replay";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // GameOver
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(650, 430);
             this.Controls.Add(this.button2);

@@ -12,12 +12,17 @@ namespace PAC_MAN
 {
     public partial class SaveMap : Form
     {
-        public string JmenoMapy { get; set; }
+        public string Jmeno { get; set; }
         private Form parent;
-        public SaveMap(Form parent)
+        public SaveMap(Form parent, bool Database)
         {
-            this.parent = parent;
             InitializeComponent();
+            this.parent = parent;
+            if (Database)
+            {
+                this.label1.Text = "Your name:";
+                this.textBox1.PlaceholderText = "Your nickname..";
+            }
         }
 
         private void button1_Click(object sender, EventArgs e) => DialogResult = DialogResult.Cancel;
@@ -31,7 +36,7 @@ namespace PAC_MAN
 
         private void button2_Click(object sender, EventArgs e)
         {
-            this.JmenoMapy = textBox1.Text;
+            this.Jmeno = textBox1.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

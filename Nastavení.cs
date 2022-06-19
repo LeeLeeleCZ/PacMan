@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Data;
+using System.Data.SQLite;
 
 namespace PAC_MAN
 {
@@ -11,10 +8,12 @@ namespace PAC_MAN
     internal static class Nastavení
     {
         public static event SettingsUpdate SettingsUpdate;
-        
+        public static SQLiteConnection m_dbConnection;
         public static bool hudba = true;
         public static bool zvuk = true;
         public static bool controls = true;
+        public static AutoScaleMode ScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+        
 
         public static bool Hudba
         {
@@ -85,5 +84,56 @@ namespace PAC_MAN
                 this.controls = controls;
             }
         }
+
+        #region SQL
+        public static void ZkontrolujDatabazi()
+        {
+            // https://web.archive.org/web/20190910153157/http://blog.tigrangasparian.com/2012/02/09/getting-started-with-sqlite-in-c-part-one/
+            // https://inloop.github.io/sqlite-viewer/
+            m_dbConnection = new SQLiteConnection("Data Source=../../../Score/Score.sqlite; version=3;");
+            m_dbConnection.Open();
+            SQLiteCommand command;
+
+            if (!tableAlreadyExists(m_dbConnection, "default"))
+            {
+                command = new SQLiteCommand(m_dbConnection);
+                command.CommandText = @"CREATE TABLE 'default' (name VARCHAR(20), score INT, cas INT, zivoty INT)"; //(name, score, cas, zivoty)
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public static bool tableAlreadyExists(SQLiteConnection openConnection, string tableName)
+        {
+            var sql =
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "';";
+            if (openConnection.State == System.Data.ConnectionState.Open)
+            {
+                SQLiteCommand command = new SQLiteCommand(sql, openConnection);
+                SQLiteDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                throw new System.ArgumentException("Data.ConnectionState must be open");
+            }
+        }
+
+        public static void NaplnDataset(DataSet ds, string query)
+        {
+            var conn = Nastavení.m_dbConnection;
+            using (SQLiteCommand cmd = new SQLiteCommand(query, conn))// error conn 
+            {
+                using (var DataAdapterd = new SQLiteDataAdapter(cmd))
+                {
+                    ds.Clear();
+                    DataAdapterd.Fill(ds);
+                }
+            }
+        }
+        #endregion
     }
 }

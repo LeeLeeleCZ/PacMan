@@ -27,8 +27,8 @@ namespace PAC_MAN
         private const int AW_HIDE = 0x00010000;
         #endregion
         Form activeForm;
-        private IWavePlayer waveOutDevice;
-        private AudioFileReader audioFileReader;
+        AudioFileReader reader = new AudioFileReader("../../../Zvuky/PAC-MAN Theme.mp3");
+        WaveOutEvent headphones = new WaveOutEvent();
         private bool HrajeHudba;
         public MainForm()
         {
@@ -61,23 +61,21 @@ namespace PAC_MAN
             otevritForm(menu);
             menu.DataSent += OptionDataSent;
 
-            waveOutDevice = new WaveOut();
-            audioFileReader = new AudioFileReader("../../../Zvuky/PAC-MAN Theme.mp3");
-
-            waveOutDevice.PlaybackStopped += (sender, args) =>
+            headphones.PlaybackStopped += (sender, args) =>
             {
-                waveOutDevice.Stop();
-                audioFileReader.Dispose();
-                waveOutDevice.Dispose();
-
-                waveOutDevice.Init(audioFileReader);
-                waveOutDevice.Play();
+                headphones.Dispose();
+                headphones = null;
             };
+            
 
             if (Nastavení.Hudba)
             {
-                waveOutDevice.Init(audioFileReader);
-                waveOutDevice.Play();
+                if (headphones == null)
+                    headphones = new WaveOutEvent();
+                if (reader == null)
+                    reader = new AudioFileReader("../../../Zvuky/PAC-MAN Theme.mp3");
+                headphones.Init(reader);
+                headphones.Play();
                 HrajeHudba = true;
             }
 
@@ -87,8 +85,12 @@ namespace PAC_MAN
                 {
                     if (!HrajeHudba)
                     {
-                        waveOutDevice.Init(audioFileReader);
-                        waveOutDevice.Play();
+                        if(headphones == null)
+                            headphones = new WaveOutEvent();
+                        if (reader == null)
+                            reader = new AudioFileReader("../../../Zvuky/PAC-MAN Theme.mp3");
+                        headphones.Init(reader);
+                        headphones.Play();
                         HrajeHudba = true;
                     }
                 }
@@ -96,9 +98,9 @@ namespace PAC_MAN
                 {
                     if (HrajeHudba)
                     {
-                        waveOutDevice.Stop();
-                        audioFileReader.Dispose();
-                        waveOutDevice.Dispose();
+                        headphones.Stop();
+                        reader.Dispose();
+                        headphones.Dispose();
                         HrajeHudba = false;
                     }
                 }
@@ -111,7 +113,15 @@ namespace PAC_MAN
             {
                 sender.Dispose();
                 sender = null;
-            }  
+            }
+            if (msg.Contains(';'))
+            {
+                var msgs = msg.Split(';');
+                var game = new game(this, msgs[1]);
+                otevritForm(game);
+                game.DataSent += OptionDataSent;
+                return;
+            }
             GC.Collect();
             switch (msg)
             {
@@ -157,7 +167,7 @@ namespace PAC_MAN
                                 {
                                     if (sender != null)
                                         sender.Close();
-                                    if (msg != null)
+                                    if (e != null)
                                     {
                                         var LevelEditor = new LevelEditor(this, e);
                                         otevritForm(LevelEditor);
@@ -173,6 +183,10 @@ namespace PAC_MAN
                     var settings = new Settings();
                     
                     otevritForm(settings);
+                    break;
+                case "Score":
+                    var score = new ScoreForm();
+                    otevritForm(score);
                     break;
             }
         }

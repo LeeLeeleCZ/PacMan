@@ -13,16 +13,9 @@ namespace PAC_MAN
 {
     public partial class Settings : Form
     {
-        //private Dictionary<string, bool> hodnoty = new Dictionary<string, bool>();
-
         public Settings()
         {
             InitializeComponent();
-            /*
-            hodnoty.Add("Music", true);
-            hodnoty.Add("Sound", true);
-            hodnoty.Add("Controls", true);
-            */
             Nastavení.SettingsUpdate += settings_update;
             settings_update();
 
@@ -76,17 +69,8 @@ namespace PAC_MAN
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void button1_Paint(object sender, PaintEventArgs e)
-        {
-            /*Pen pen = new Pen(Color.Red, 2);
-            e.Graphics.DrawLine(pen, 0, 0, button1.Width, button1.Height);
-            e.Graphics.DrawLine(pen, button1.Width, 0, 0, button1.Height);*/
-        }
+        private void button1_Click(object sender, EventArgs e) => this.Close();
+        
         
         private void pictureBox4_Click(object sender, EventArgs e)
         {
@@ -107,6 +91,7 @@ namespace PAC_MAN
 
         private void Settings_Load(object sender, EventArgs e)
         {
+            
             List<PictureBox> list = new List<PictureBox>();
             foreach (Control c in this.Controls)
             {

@@ -37,7 +37,7 @@ namespace PAC_MAN
             saveBtn.BackgroundImageLayout = ImageLayout.Stretch;
 
             editGhostsBtn.BackgroundImage = Image.FromFile("../../../grafika/ghost.png");
-            Ghost1Btn.BackgroundImage = Image.FromFile("../../../grafika/ghost-purple.png");
+            Ghost1Btn.BackgroundImage = Image.FromFile("../../../grafika/ghost.png");
             Ghost2Btn.BackgroundImage = Image.FromFile("../../../grafika/ghost-teal.png");
             editPacManBtn.BackgroundImage = Image.FromFile("../../../grafika/pacman.gif");
             editGhostsBtn.BackgroundImageLayout = ImageLayout.Stretch;
@@ -67,6 +67,20 @@ namespace PAC_MAN
                     else
                         zobrazit = null;
                     break;
+                case "Ghost1Btn":
+                    DataSent(this, LevelEditor.Mode.EditGhosts);
+                    if (!Ghost1Btn.Visible)
+                        zobrazit = Show.Duchove;
+                    else
+                        zobrazit = null;
+                    break;
+                case "Ghost2Btn":
+                    DataSent(this, LevelEditor.Mode.EditTrackers);
+                    if (!Ghost1Btn.Visible)
+                        zobrazit = Show.Duchove;
+                    else
+                        zobrazit = null;
+                    break;                
                 case "editPacManBtn":
                     DataSent(this, LevelEditor.Mode.EditPacMan);
                     break;
@@ -109,7 +123,7 @@ namespace PAC_MAN
                 SchovatButtony();
                 Ghost1Btn.Visible = true;
                 Ghost2Btn.Visible = true;
-                Ghost3Btn.Visible = true;
+                Ghost3Btn.Visible = false;
                 for (int i = 0; i < 28; i++)
                 {
                     Ghost1Btn.Location = Ghost1Btn.Location with { X = Ghost1Btn.Location.X + 2 };
@@ -158,13 +172,6 @@ namespace PAC_MAN
             e.Graphics.DrawLine(pen, returnBtn.Width, 0, 0, returnBtn.Height);*/
         }
 
-        //private void Mainform_DataSent(string msg)
-        //{
-        //    if (msg == "position")
-        //    {
-        //        this.Location = new Point(mainform.Location.X + mainform.Width / 2 - this.Width / 2, mainform.Location.Y + mainform.Height / 2 - this.Height / 2);
-        //    }
-        //}
 
         public static void wait(int milliseconds)
         {
@@ -187,10 +194,6 @@ namespace PAC_MAN
             }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-
-        }
 
         enum Show
         {
@@ -256,5 +259,6 @@ namespace PAC_MAN
                     break;
             }
         }
+
     }
 }

@@ -95,7 +95,6 @@
             this.button1.TabIndex = 2;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            this.button1.Paint += new System.Windows.Forms.PaintEventHandler(this.button1_Paint);
             // 
             // label5
             // 
@@ -123,6 +122,7 @@
             this.label7.TabIndex = 5;
             this.label7.Text = "Controls";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label7.Visible = false;
             this.label7.Paint += new System.Windows.Forms.PaintEventHandler(this.label3_Paint);
             // 
             // label10
@@ -135,6 +135,7 @@
             this.label10.TabIndex = 8;
             this.label10.Text = "WASD";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label10.Visible = false;
             // 
             // label11
             // 
@@ -146,6 +147,7 @@
             this.label11.TabIndex = 9;
             this.label11.Text = "Šipky";
             this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label11.Visible = false;
             // 
             // pictureBox1
             // 
@@ -180,6 +182,7 @@
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox3.TabIndex = 12;
             this.pictureBox3.TabStop = false;
+            this.pictureBox3.Visible = false;
             this.pictureBox3.Click += new System.EventHandler(this.pictureBox4_Click);
             this.pictureBox3.Paint += new System.Windows.Forms.PaintEventHandler(this.Paint);
             // 
@@ -192,11 +195,13 @@
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox4.TabIndex = 13;
             this.pictureBox4.TabStop = false;
+            this.pictureBox4.Visible = false;
             this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
             this.pictureBox4.Paint += new System.Windows.Forms.PaintEventHandler(this.Paint);
             // 
             // Settings
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1200, 800);
             this.Controls.Add(this.pictureBox4);

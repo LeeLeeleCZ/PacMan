@@ -102,6 +102,7 @@
             this.Ghost1Btn.TabIndex = 8;
             this.Ghost1Btn.UseVisualStyleBackColor = false;
             this.Ghost1Btn.Visible = false;
+            this.Ghost1Btn.Click += new System.EventHandler(this.button1_Click);
             this.Ghost1Btn.MouseHover += new System.EventHandler(this.LevelEditorOptions_MouseHover);
             // 
             // Ghost2Btn
@@ -114,6 +115,7 @@
             this.Ghost2Btn.TabIndex = 9;
             this.Ghost2Btn.UseVisualStyleBackColor = false;
             this.Ghost2Btn.Visible = false;
+            this.Ghost2Btn.Click += new System.EventHandler(this.button1_Click);
             this.Ghost2Btn.MouseHover += new System.EventHandler(this.LevelEditorOptions_MouseHover);
             // 
             // Ghost3Btn

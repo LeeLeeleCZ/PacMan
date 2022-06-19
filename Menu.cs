@@ -95,24 +95,17 @@ namespace PAC_MAN
             
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            DataSent(null, "Game");
-        }
-        
-        private void button2_Click(object sender, EventArgs e)
-        {
-            DataSent(null, "LevelEditor");
-        }
+        private void button1_Click(object sender, EventArgs e) => DataSent(null, "Game");
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            DataSent(null, "Settings");
-        }
+        private void button2_Click(object sender, EventArgs e) => DataSent(null, "LevelEditor");
+
+        private void button4_Click(object sender, EventArgs e) => DataSent(null, "Settings");
 
         private void Menu_Load(object sender, EventArgs e)
         {
             
         }
+
+        private void button3_Click(object sender, EventArgs e) => DataSent(null, "Score");
     }
 }

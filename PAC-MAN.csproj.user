@@ -37,7 +37,16 @@
     <Compile Update="SaveMap.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="ScoreForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TrackerGhost.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="WinGame.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

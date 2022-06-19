@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +11,48 @@ namespace PAC_MAN
 {
     public class pacman : PictureBox
     {
-        IWavePlayer waveOutDevice = new WaveOut();
-        AudioFileReader audioFileReader = new AudioFileReader("../../../Zvuky/Pac-Man eating.mp3");
+        //WaveOutEvent waveOutDevice = new WaveOut();
+        //AudioFileReader audioFileReader = new AudioFileReader("../../../Zvuky/Pac-Man eating.mp3");
+        //System.Media.SoundPlayer wplayer = new System.Media.SoundPlayer(@"c:\mywavfile.wav");
+
         public int lives = 3;
-        int score = 0;
+        public int score = 0;
         public int x = 0;
         public int y = 0;
         Graphics g;
-        
+        public bool deathCooldown = false;
+
+        public bool DeathCooldown
+        {
+            get
+            {
+                return deathCooldown;
+            }
+            set
+            {
+                deathCooldown = true;
+                var deathTimer = new Timer();
+                deathTimer.Interval = 250;
+                int delkaTimeru = 0;
+                bool nepruhledny = false;
+                deathTimer.Tick += (s, e) =>
+                {
+                    this.Image = nepruhledny ? aktualniImage : SetAlpha((Bitmap)aktualniImage, 50);
+                    nepruhledny = !nepruhledny;
+                    delkaTimeru++;
+
+                    if (delkaTimeru == 12)
+                    {
+                        deathCooldown = false;
+                        this.Image = aktualniImage;
+                        deathTimer.Stop();
+                    }
+                };
+                deathTimer.Start();
+            }
+        }
+
+
         public int X { 
             get { return x; } 
             set
@@ -36,8 +71,8 @@ namespace PAC_MAN
 
         private int[,] map;
         private game Parent;
-        public bool pohybujeSe = false;
         private Smer _smer = Smer.Nikam;
+        private Image aktualniImage = Image.FromFile("../../../grafika/pacman.gif");
 
         private Smer smer
         {
@@ -49,18 +84,20 @@ namespace PAC_MAN
                 switch (value)
                 {
                     case Smer.Doleva:
-                        this.Image = Image.FromFile("../../../grafika/pacman(doleva).gif");
+                        this.aktualniImage = Image.FromFile("../../../grafika/pacman(doleva).gif");
                         break;
                     case Smer.Doprava:
-                        this.Image = Image.FromFile("../../../grafika/pacman.gif");
+                        this.aktualniImage = Image.FromFile("../../../grafika/pacman.gif");
                         break;
                     case Smer.Nahoru:
-                        this.Image = Image.FromFile("../../../grafika/pacman(nahoru).gif");
+                        this.aktualniImage = Image.FromFile("../../../grafika/pacman(nahoru).gif");
                         break;
                     case Smer.Dolu:
-                        this.Image = Image.FromFile("../../../grafika/pacman(dolu).gif");
+                        this.aktualniImage = Image.FromFile("../../../grafika/pacman(dolu).gif");
                         break;
                 }
+
+                this.Image = aktualniImage;
             }
         }
         private Smer budouciSmer = Smer.Nikam;
@@ -121,21 +158,23 @@ namespace PAC_MAN
             this.y = y;
             this.Image = Image.FromFile("../../../grafika/pacman.gif");
             this.SizeMode = PictureBoxSizeMode.StretchImage;
-            waveOutDevice.Init(audioFileReader);
+            /*waveOutDevice.Init(audioFileReader);
 
             waveOutDevice.PlaybackStopped += (sender, args) =>
             {
-                //waveOutDevice.Play();
+                ZvukHraje = false;
                 waveOutDevice.Stop();
-                //audioFileReader.Dispose();
-                //waveOutDevice.Dispose();
                 
-                //waveOutDevice.Init(audioFileReader);
-            };
+                //audioFileReader.Dispose();
+                waveOutDevice.Dispose();
+
+            };*/
             timer.Interval = 1;
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
         }
+
+        private bool ZvukHraje = false;
 
 
         private void timer_Tick(object? sender, EventArgs e)
@@ -204,11 +243,30 @@ namespace PAC_MAN
         {
             if (this.map[this.X, this.Y] == -1)
             {
+                if (Nastavení.Zvuk)
+                {
+                    if (!ZvukHraje)
+                    {
+                        ZvukHraje = true;
+                        AudioFileReader reader = new AudioFileReader("../../../Zvuky/Pac-Man eating.mp3");
+                        var headphones = new WaveOutEvent();
+                        headphones.PlaybackStopped += (s, e) =>
+                        {
+                            headphones.Dispose();
+                            reader.Dispose();
+                            reader = null;
+                            headphones = null;
+                        };
+                        headphones.Init(reader);
+                        headphones.Play();
+                    }
+                }
                 this.map[this.X, this.Y] = 0;
-                Parent.pocetGoldu--;
-                score++;
+                Parent.PocetGoldu--;
+                score+=100;
                 Graphics g = Graphics.FromImage(Parent.btm);
                 g.FillEllipse(new SolidBrush(Color.Black), x * 50 + 20, y * 50 + 20, 10, 10);
+                ZvukHraje = false;
             }
         }
 
@@ -267,6 +325,30 @@ namespace PAC_MAN
             Doprava,
             Dolu,
             Nikam
+        }
+
+        static Bitmap SetAlpha(Bitmap bmpIn, int alpha)
+        {
+            Bitmap bmpOut = new Bitmap(bmpIn.Width, bmpIn.Height);
+            float a = alpha / 255f;
+            Rectangle r = new Rectangle(0, 0, bmpIn.Width, bmpIn.Height);
+
+            float[][] matrixItems = {
+                new float[] {1, 0, 0, 0, 0},
+                new float[] {0, 1, 0, 0, 0},
+                new float[] {0, 0, 1, 0, 0},
+                new float[] {0, 0, 0, a, 0},
+                new float[] {0, 0, 0, 0, 1}};
+
+            ColorMatrix colorMatrix = new ColorMatrix(matrixItems);
+
+            ImageAttributes imageAtt = new ImageAttributes();
+            imageAtt.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+            using (Graphics g = Graphics.FromImage(bmpOut))
+                g.DrawImage(bmpIn, r, r.X, r.Y, r.Width, r.Height, GraphicsUnit.Pixel, imageAtt);
+
+            return bmpOut;
         }
     }
 }

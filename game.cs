@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -21,17 +22,66 @@ namespace PAC_MAN
         int[,] map;
         List<Label> listLabelu = new List<Label>();
         public int pocetGoldu;
+        public int PocetGoldu
+        {
+            get { return pocetGoldu; }
+            set
+            {
+                if (value == 0)
+                {
+                    m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+                    foreach (ghost g in listDuchu)
+                        g.timer.Stop();
+                    Pacman.timer.Stop();
+                    m_GlobalHook.Dispose();
+                    pocetGoldu = value;
+                    DateTime dt = DateTime.Now;
+                    using (var wingame = new WinGame(parent))
+                    {
+                        var result = wingame.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            DataSent(this, "Menu");
+                        }
+                        else if (result == DialogResult.Cancel)
+                        {
+                            DataSent(this, $"Game;{mapName}");
+                        }
+                        else if (result == DialogResult.Continue)
+                        {
+                            wingame.Close();
+                            using (var Name = new SaveMap(parent, true))
+                            {
+                                var result2 = Name.ShowDialog();
+                                if (result2 == DialogResult.OK)
+                                {
+                                    SQLiteCommand command = new SQLiteCommand(Nastavení.m_dbConnection);
+                                    TimeSpan ts = dt - startTime;
+                                    command.CommandText = $@"INSERT INTO '{mapName}' (name, score, cas, zivoty) VALUES ('{Name.Jmeno}', '{Pacman.score}', '{ts.Minutes}:{ts.Seconds}', '{Pacman.lives}')";
+                                    command.ExecuteNonQuery();
+                                    this.Close();
+                                }
+                                else if (result2 == DialogResult.Cancel)
+                                {
+                                    Name.Close();
+                                    DataSent(this, "Menu");
+                                }
+                            }
+                        }
+                    }
+                }
+                else 
+                    pocetGoldu = value;
+            }
+        }
         public event DataSentHandler DataSent;
-        public int score = 0;
-        //public int PacmanX = 0;
-        //public int PacmanY = 0;
-        //ghost ghost;
-        List<ghost> listDuchu = new List<ghost>();
+        List<dynamic> listDuchu = new List<dynamic>();
         Graphics g;
         public pacman Pacman;
         string mapName;
         private Form parent;
         private bool gameOver = false;
+        private DateTime startTime;
         public bool GameOver
         {
             get => gameOver;
@@ -52,6 +102,10 @@ namespace PAC_MAN
                         {
                             DataSent(this,"Menu");
                         }
+                        else if (result == DialogResult.Cancel)
+                        {
+                            DataSent(this, $"Game;{mapName}");
+                        }
                     }
                 }
                 else
@@ -62,7 +116,6 @@ namespace PAC_MAN
         public game(Form parent, string mapName)
         {
             this.mapName = mapName;
-            //this.mapName = mapName;
             this.parent = parent;
             parent.Visible = true;
             InitializeComponent();
@@ -70,31 +123,14 @@ namespace PAC_MAN
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             map = new int[this.Width / 50, this.Height / 50];
-            
-            //nakreslitGrid();
-            //PacManPictureBox.Image = Image.FromFile("pacman.gif");
-            // make the image fit the picturebox
-            g = Graphics.FromImage(btm);
-            //PacManPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
 
             NacistMapu();
             parent.Visible = true;
             m_GlobalHook = Hook.AppEvents();
             m_GlobalHook.KeyPress += GlobalHookKeyPress;
-            
-            //this.BackgroundImage = Image.FromFile(@"C:\Users\filip\Videos\Captures\Sea of Thieves 12.02.2022 23_30_47.png");
 
-
-
-            //ghost ghost2 = new ghost(map.GetLength(0)-1, 0, map, this);
-
-            //ghost2.BringToFront();
-
-            //this.Controls.Add(ghost2);
-
-            //listDuchu.Add(ghost);
-            //listDuchu.Add(ghost2);
-            //timer1.Start();
+            // save system time
+            startTime = DateTime.Now;
         }
 
 
@@ -140,15 +176,20 @@ namespace PAC_MAN
                         this.Controls.Add(ghost);
                         listDuchu.Add(ghost);
                     }
+                    else if (map[x, y] == 4)
+                    {
+                        var ghost = new TrackerGhost(x, y, map, this);
+                        ghost.BringToFront();
+                        this.Controls.Add(ghost);
+                        listDuchu.Add(ghost);
+                    }
                     else if (map[x, y] == -1)
                     {
-                        //draw a gold coin on the map using graphics
                         map[x, y] = -1;
                         pocetGoldu++;
                         g.FillEllipse(new SolidBrush(Color.Gold), x * 50+20, y * 50+20, 10, 10);
                         
                     }
-                    //g.FillRectangle(Brushes.White, x * 50, y * 50, 50, 50);
                 }
             }
             this.Refresh();
@@ -157,8 +198,7 @@ namespace PAC_MAN
         private void lblPaint(object? sender, PaintEventArgs e)
         {
             Label lbl = (Label)sender;
-
-            //get lbl location in the map array
+            
             int x = (lbl.Location.X / 50);
             int y = (lbl.Location.Y / 50);
 
@@ -211,7 +251,6 @@ namespace PAC_MAN
 
         private List<int> DeserializeXml()
         {
-            // deserialize xml
             XmlSerializer serializer = new XmlSerializer(typeof(List<int>));
             FileStream fs = new FileStream($"..//..//..//Maps//{mapName}.xml", FileMode.Open);
             List<int> list = (List<int>)serializer.Deserialize(fs);
@@ -222,55 +261,72 @@ namespace PAC_MAN
 
         private void GlobalHookKeyPress(object? sender, KeyPressEventArgs e)
         {
-            switch(e.KeyChar)
+            if (Nastavení.Controls)
             {
-                case 'w':
-                    Pacman.BudouciSmer = pacman.Smer.Nahoru;
-                    break;
-                case 'a':
-                    Pacman.BudouciSmer = pacman.Smer.Doleva;
-                    break;
-                case 's':
-                    Pacman.BudouciSmer = pacman.Smer.Dolu;
-                    break;
-                case 'd':
-                    Pacman.BudouciSmer = pacman.Smer.Doprava;
-                    break;
-                case (char)27:
-                    m_GlobalHook.KeyPress -= GlobalHookKeyPress;
-                    m_GlobalHook.Dispose();
-                    Pacman.Dispose();
-                    foreach (var item in listDuchu)
-                    {
-                        item.timer.Stop();
-                        item.Dispose();
-                    }
-                    this.Close();
-                    this.Dispose();
-                    GC.Collect();
-                    break;
+                switch (e.KeyChar)
+                {
+                    case 'w':
+                        Pacman.BudouciSmer = pacman.Smer.Nahoru;
+                        break;
+                    case 'a':
+                        Pacman.BudouciSmer = pacman.Smer.Doleva;
+                        break;
+                    case 's':
+                        Pacman.BudouciSmer = pacman.Smer.Dolu;
+                        break;
+                    case 'd':
+                        Pacman.BudouciSmer = pacman.Smer.Doprava;
+                        break;
+                    case (char)27:
+                        m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+                        m_GlobalHook.Dispose();
+                        Pacman.Dispose();
+                        foreach (var item in listDuchu)
+                        {
+                            item.timer.Stop();
+                            item.Dispose();
+                        }
+                        this.Close();
+                        this.Dispose();
+                        GC.Collect();
+                        break;
+                }
+            }
+            else
+            {
+                switch (e.KeyChar)
+                {
+                    case (char)38:
+                        Pacman.BudouciSmer = pacman.Smer.Nahoru;
+                        break;
+                    case (char)37:
+                        Pacman.BudouciSmer = pacman.Smer.Doleva;
+                        break;
+                    case (char)40:
+                        Pacman.BudouciSmer = pacman.Smer.Dolu;
+                        break;
+                    case (char)39:
+                        Pacman.BudouciSmer = pacman.Smer.Doprava;
+                        break;
+                    case (char)27:
+                        m_GlobalHook.KeyPress -= GlobalHookKeyPress;
+                        m_GlobalHook.Dispose();
+                        Pacman.Dispose();
+                        foreach (var item in listDuchu)
+                        {
+                            item.timer.Stop();
+                            item.Dispose();
+                        }
+                        this.Close();
+                        this.Dispose();
+                        GC.Collect();
+                        break;
+                }
             }
         }
-
-        void nakreslitGrid()
-        {
-            // draw a grid on the form, 50 pixels wide and 50 pixels high
-            Graphics g = Graphics.FromImage(btm);
-            for (int i = 0; i < this.Width; i += 50)
-            {
-                // horizontální linky
-                g.DrawLine(Pens.White, i, 0, i, this.Height);
-            }
-            for (int i = 0; i < this.Height; i += 50)
-            {
-                // vertikální linky
-                g.DrawLine(Pens.White, 0, i, this.Width, i);
-            }
-        }
-        private void game_Paint(object sender, PaintEventArgs e)
-        {
-           e.Graphics.DrawImage(btm, 0, 0);   
-        }
+        
+        
+        private void game_Paint(object sender, PaintEventArgs e) => e.Graphics.DrawImage(btm, 0, 0);
 
         private void game_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -281,23 +337,6 @@ namespace PAC_MAN
         {
             
             
-        }
-        private void MapDataSent(Form? sender, string? msg)
-        {
-            
-            mapName = msg;
-            /*
-            NacistMapu();
-            parent.Visible = true;
-            m_GlobalHook = Hook.AppEvents();
-            m_GlobalHook.KeyPress += GlobalHookKeyPress;
-            pacman = new pacman(0, 0, map, this);
-            pacman.BringToFront();
-            this.Controls.Add(pacman);
-            ghost = new ghost(map.GetLength(0) - 1, map.GetLength(1) - 1, map, this);
-            ghost.BringToFront();
-            this.Controls.Add(ghost);
-             */
         }
     }
 }

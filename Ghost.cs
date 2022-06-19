@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace PAC_MAN
     {
         public int x;
         public int y;
-        Smer smer;
-        game parent;
-        int[,] map;
+        protected Smer smer;
+        protected game parent;
+        protected int[,] map;
         public System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         
         public ghost(int x, int y, int[,] map, game parent)
@@ -36,6 +37,11 @@ namespace PAC_MAN
 
         }
 
+        public ghost()
+        {
+
+        }
+
         private void tick(object? sender, EventArgs e)
         {
 
@@ -43,7 +49,7 @@ namespace PAC_MAN
             {
                 x = this.Location.X / 50;
                 y = this.Location.Y / 50;
-                smer = VybratSmer();
+                smer = this.VybratSmer();
             }
             switch (smer)
             {
@@ -62,9 +68,15 @@ namespace PAC_MAN
             }
             if (this.Bounds.IntersectsWith(new Rectangle(parent.Pacman.x * 50, parent.Pacman.y * 50, 50, 50)) && parent.GameOver == false)
             {
-                parent.GameOver = true;
-                timer.Stop();
-                //MessageBox.Show("umřel jsi");
+                if(parent.Pacman.DeathCooldown)
+                    return;
+                parent.Pacman.lives--;
+                parent.Pacman.DeathCooldown = true;
+                if(parent.Pacman.lives <= 0)
+                {
+                    parent.GameOver = true;
+                    timer.Stop();
+                }
             }
         }
 
@@ -77,25 +89,25 @@ namespace PAC_MAN
 
             try
             {
-                doleva = map[this.x - 1, this.y] == 0 || map[this.x - 1, this.y] == -1 ? true : false;
+                doleva = map[this.x - 1, this.y] == 0 || map[this.x - 1, this.y] == -1 || map[this.x - 1, this.y] == 2 ? true : false;
             }
             catch { }
 
             try
             {
-                nahoru = map[this.x , this.y - 1] == 0 || map[this.x, this.y - 1] == -1 ? true : false;
+                nahoru = map[this.x , this.y - 1] == 0 || map[this.x, this.y - 1] == -1 || map[this.x, this.y - 1] == 2 ? true : false;
             }
             catch { }
 
             try
             {
-                doprava = map[this.x + 1, this.y] == 0 || map[this.x + 1, this.y] == -1 ? true : false;
+                doprava = map[this.x + 1, this.y] == 0 || map[this.x + 1, this.y] == -1 || map[this.x + 1, this.y] == 2 ? true : false;
             }
             catch { }
 
             try
             {
-                dolu = map[this.x, this.y + 1] == 0 || map[this.x, this.y + 1] == -1 ? true : false;
+                dolu = map[this.x, this.y + 1] == 0 || map[this.x, this.y + 1] == -1 || map[this.x, this.y + 1] == 2 ? true : false;
             }
             catch { }
 

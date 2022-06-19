@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -200,6 +201,28 @@ namespace PAC_MAN
                 Controls.Add(Pbox);
                 Pbox.Click += PboxClick;
             }
+            else if (ModEditu == Mode.EditTrackers)
+            {
+                int x = e.X / 50;
+                int y = e.Y / 50;
+
+                if (x > btm.Width / 50 - 1 || y > btm.Height / 50 - 1 || x < 0 || y < 0)
+                    return;
+
+                if (pole[x, y] != 0)
+                    return;
+
+                pole[x, y] = 4;
+                PictureBox Pbox = new PictureBox();
+                Pbox.Size = new Size(50, 50);
+                Pbox.Location = new Point(x * 50, y * 50);
+                Pbox.Image = Image.FromFile("../../../grafika/ghost-teal.png");
+                Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                Pbox.BackColor = Color.Transparent;
+                Pbox.Tag = "ghost";
+                Controls.Add(Pbox);
+                Pbox.Click += PboxClick;
+            }
         }
 
         private void PboxClick(object? sender, EventArgs e)
@@ -222,6 +245,14 @@ namespace PAC_MAN
                 Controls.Remove(Pbox);
                 GC.Collect();
             }
+            else if (ModEditu == Mode.EditTrackers && Pbox.Tag == "ghost")
+            {
+                int x = Pbox.Location.X / 50;
+                int y = Pbox.Location.Y / 50;
+                pole[x, y] = 0;
+                Controls.Remove(Pbox);
+                GC.Collect();
+            }
         }
 
         public void saveLevel(int[,] pole)
@@ -231,12 +262,12 @@ namespace PAC_MAN
                 System.Media.SystemSounds.Beep.Play();
                 return;
             }
-            using (var Ulozeni = new SaveMap(parent))
+            using (var Ulozeni = new SaveMap(parent, false))
             {
                 var result = Ulozeni.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    if (Ulozeni.JmenoMapy == "")
+                    if (Ulozeni.Jmeno == "")
                         return;
                     List<int> list = new List<int>();
                     foreach (int item in pole)
@@ -245,11 +276,25 @@ namespace PAC_MAN
                     }
                     XmlSerializer serializer = new XmlSerializer(typeof(List<int>));
 
-                    using (FileStream fs = new FileStream($"..//..//..//Maps//{Ulozeni.JmenoMapy}.xml", FileMode.Create))
+                    using (FileStream fs = new FileStream($"..//..//..//Maps//{Ulozeni.Jmeno.ToLower().Replace(' ', '_')}.xml", FileMode.Create))
                     {
                         serializer.Serialize(fs, list);
                     }
-                    
+
+                    try
+                    {
+                        SQLiteCommand command;
+                        if (Nastavení.tableAlreadyExists(Nastavení.m_dbConnection, Ulozeni.Jmeno.ToLower().Replace(' ', '_')))
+                        {
+                            command = new SQLiteCommand($"DROP TABLE '{Ulozeni.Jmeno.ToLower().Replace(' ', '_')}'", Nastavení.m_dbConnection);
+                            command.ExecuteNonQuery();
+                            // send command
+                        }
+                        command = new SQLiteCommand($"CREATE TABLE '{Ulozeni.Jmeno.ToLower().Replace(' ', '_')}' (name VARCHAR(20), score INT, cas VARCHAR(20), zivoty INT)", Nastavení.m_dbConnection);
+                        command.ExecuteNonQuery();
+                    }
+                    catch { }
+
                     EditorOptions.Close();
                     EditorOptions.Dispose();
                     Close();
@@ -302,6 +347,7 @@ namespace PAC_MAN
                         Pbox.Tag = "Pacman";
                         Controls.Add(Pbox);
                         Pbox.Click += PboxClick;
+                        PacmanExists = true;
                     }
                     else if (pole[i, y] == 3)
                     {
@@ -317,7 +363,7 @@ namespace PAC_MAN
                     }
                     else if (pole[i, y] == -1)
                     {
-                        pole[i, y] = -1;
+                        //pole[i, y] = -1;
                         g.FillEllipse(new SolidBrush(Color.Gold), i * 50 + 20, y * 50 + 20, 10, 10);
                     }
                     p++;
@@ -410,6 +456,7 @@ namespace PAC_MAN
         {
             EditWalls,
             EditGhosts,
+            EditTrackers,
             EditPacMan,
             ReturnBtn,
             SaveBtn,

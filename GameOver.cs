@@ -3,7 +3,6 @@
     public partial class GameOver : Form
     {
         private Form parent;
-        public bool Ulozit;
         public GameOver(Form parent)
         {
             this.parent = parent;
@@ -23,12 +22,7 @@
             e.Graphics.DrawLine(pen, this.Width, 0, this.Width, this.Height);
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Ulozit = false;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
+        private void button1_Click(object sender, EventArgs e) => this.DialogResult = DialogResult.OK;
 
         private void label1_Paint(object sender, PaintEventArgs e)
         {
@@ -39,5 +33,7 @@
             e.Graphics.DrawLine(pen, 0, 0, 0, Sender.Height);
             e.Graphics.DrawLine(pen, Sender.Width, 0, Sender.Width, Sender.Height);
         }
+
+        private void button2_Click(object sender, EventArgs e) => this.DialogResult = DialogResult.Cancel;
     }
 }

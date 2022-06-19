@@ -173,6 +173,18 @@ namespace PAC_MAN
                         postavy.Add(Pbox);
                         panel2.Controls.Add(Pbox);
                     }
+                    else if (map[i, y] == 4)
+                    {
+                        PictureBox Pbox = new PictureBox();
+                        Pbox.Size = new Size(20, 20);
+                        Pbox.Location = new Point(i * 20, y * 20);
+                        Pbox.Image = Image.FromFile("../../../grafika/ghost-teal.png");
+                        Pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        Pbox.BackColor = Color.Transparent;
+                        Pbox.Tag = "ghost";
+                        postavy.Add(Pbox);
+                        panel2.Controls.Add(Pbox);
+                    }
                 }
             }
 
@@ -182,7 +194,7 @@ namespace PAC_MAN
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DataSent(null, null);
+            DataSent(this, null);
             this.Close();
         }
 
@@ -213,7 +225,7 @@ namespace PAC_MAN
         {
             if(selectedbutton != null)
                 DataSent(this, mapName);
-            //this.Close();
+            this.Close();
         }
 
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e) => panel1.AutoScrollPosition = new Point(0, vScrollBar1.Value);
